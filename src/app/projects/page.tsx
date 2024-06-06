@@ -1,5 +1,5 @@
 const page = () => {
-  return <div>Projects GAME LINK Link to Games Pre For Games Repeat Open</div>;
+  return <div>Projects GAME LINK Link to Games</div>;
 };
 
 export default page;
