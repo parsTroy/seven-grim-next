@@ -538,9 +538,11 @@ const DoomLikeGame = () => {
         if (val === 0) {
           clearInterval(interval);
           setIsCountdown(false);
-          const nextRound = round + 1;
-          setRound(nextRound);
-          setTimeout(() => startRound(nextRound), 200);
+          setRound((r: number) => {
+            const nextRound = r + 1;
+            setTimeout(() => startRound(nextRound), 200);
+            return nextRound;
+          });
         }
       }, 1000);
       return () => clearInterval(interval);
