@@ -47,6 +47,7 @@ const DoomLikeGame = () => {
     y: number;
     speed: number;
     alive: boolean;
+    frame: number;
   };
 
   const [enemies, setEnemies] = useState<Enemy[]>([]);
@@ -54,6 +55,16 @@ const DoomLikeGame = () => {
 
   // At the top, add a constant for minimum spawn distance (in tiles)
   const MIN_SPAWN_DIST = 3 * tileSize;
+
+  // Preload enemy sprites
+  const enemySprites = [
+    useRef<HTMLImageElement | null>(null),
+    useRef<HTMLImageElement | null>(null),
+    useRef<HTMLImageElement | null>(null),
+  ];
+
+  // Add animation tick for enemy animation
+  const [enemyAnimTick, setEnemyAnimTick] = useState(0);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -166,17 +177,18 @@ const DoomLikeGame = () => {
         // Scale size by distance, clamp to minimum
         const rawSize = Math.abs(Math.floor(height / transformY));
         const enemySize = Math.max(rawSize, 20);
-        // Draw circle at projected position (centered vertically for now)
-        ctx.fillStyle = 'red';
-        ctx.beginPath();
-        ctx.arc(
-          enemyScreenX,
-          height / 2, // center vertically for now
-          enemySize / 2,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
+        // Animation frame based on global tick
+        const frame = Math.floor((enemyAnimTick / 1) % 3);
+        const sprite = enemySprites[frame].current;
+        if (sprite) {
+          ctx.drawImage(
+            sprite,
+            enemyScreenX - enemySize / 2,
+            height / 2 - enemySize / 2,
+            enemySize,
+            enemySize
+          );
+        }
       }
     });
   
@@ -275,11 +287,25 @@ const DoomLikeGame = () => {
     window.addEventListener('keydown', keyDownHandler);
     window.addEventListener('keyup', keyUpHandler);
 
+    // Preload enemy sprite images
+    const files = ['/enemy_1.png', '/enemy_2.png', '/enemy_3.png'];
+    files.forEach((src, i) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = () => {
+        enemySprites[i].current = img;
+      };
+    });
+
+    // Animation timer for enemy walking
+    const interval = setInterval(() => setEnemyAnimTick((tick: number) => tick + 1), 200);
+
     return () => {
       window.removeEventListener('keydown', keyDownHandler);
       window.removeEventListener('keyup', keyUpHandler);
       document.body.style.overflow = '';
       window.removeEventListener('resize', resizeCanvas);
+      clearInterval(interval);
     };
   }, [playing]);
 
@@ -333,6 +359,7 @@ const DoomLikeGame = () => {
         y,
         speed: 0.1 + Math.random() * 0.1, // Slower speed
         alive: true,
+        frame: 0,
       });
     }
     enemiesRef.current = newEnemies;
