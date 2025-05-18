@@ -180,18 +180,6 @@ const DoomLikeGame = () => {
       }
     });
   
-    // Optional: Debug lines for alignment
-    ctx.strokeStyle = 'lime';
-    ctx.beginPath();
-    ctx.moveTo(0, height - 1);
-    ctx.lineTo(width, height - 1);
-    ctx.stroke();
-    ctx.strokeStyle = 'yellow';
-    ctx.beginPath();
-    ctx.moveTo(width / 2, 0);
-    ctx.lineTo(width / 2, height);
-    ctx.stroke();
-  
     const image = isFiringRef.current ? gunFireImage.current : gunIdleImage.current;
     if (!image) return;
   
@@ -277,10 +265,10 @@ const DoomLikeGame = () => {
           if (!proj) return;
           // Check if enemy is in the center of the screen (crosshair)
           const crosshairX = width / 2;
-          // Allow a small tolerance (enemy width)
+          // Use a larger hitbox (60% wider than sprite)
           if (
-            proj.screenX > crosshairX - proj.size / 2 &&
-            proj.screenX < crosshairX + proj.size / 2
+            proj.screenX > crosshairX - proj.size * 0.6 &&
+            proj.screenX < crosshairX + proj.size * 0.6
           ) {
             // Check occlusion (already filtered by visibleEnemies, but double check)
             if (isEnemyVisible(enemy)) {
