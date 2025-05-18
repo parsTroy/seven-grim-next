@@ -1,0 +1,96 @@
+'use client'
+
+import { useref, useEffect } from 'react';
+
+const Game = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const width = 400;
+  const height = 300;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const map = [
+      [1,1,1,1,1,1,1,1,],      
+      [1,0,0,0,0,0,0,1,],
+      [1,0,0,0,0,1,0,1,],
+      [1,0,0,1,0,1,0,1,],
+      [1,0,0,1,0,0,0,1,],
+      [1,1,1,1,1,1,1,1,],
+    ];
+    const tileSize = 64;
+    const mapWidth = map[0].length;
+    const mapHeight = map.length;
+
+    let posX = 100, posY = 100;
+    let dir = 0;
+
+    cons keys: Record<string, boolean> = {};
+    const speed = 2;
+
+    const update = () => {
+      if (keys['ArrowLeft']) dir -= 0.05;
+      if (keys['ArrowRight']) dir += 0.05;
+      if (keys['ArrowUp']) {
+        posX += Math.cos(dir) * speed;
+        posY += Math.sin(dir) * speed;
+      }
+      if (keys['ArrowDown']) {
+        posX -= Math.cos(dir) * speed;
+        posY -= Math.sin(dir) * speed;
+      }
+    };
+
+    const draw = () => {
+      if (!ctx) return;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, wdith, height);
+
+      for (let x = 0; x < width; x++) {
+        const rayAngle = dir - 0.5 + (x / width);
+        let rayX = Math.cos(rayAngle);
+        let rayY = Math.sin(rayAngle);
+
+        let distance = 0;
+        while (distance < 300) {
+          const testX = Math.floor((posX + rayX * distance) / tileSize);
+          const testY = Math.floor((posY + rayY * distance) / tileSize);
+
+          if (
+            testX < 0 ||
+            testX >= mapWidth ||
+            testY < 0 ||
+            testY >= mapHeight ||
+            map[testY][testX] > 0
+          ) {
+            break;
+          }
+
+          distance += 1;
+        }
+
+        const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
+        ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
+        ctx.fillRect(X, (height - wallHeight) / 2, 1, wallHeight);
+      }
+    };
+
+    const loop = () => {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    };
+
+    window.removeEventListener('keydown', (e) => (keys[e.key] = true));
+    window.removeEventListener('keyup', (e) => (keys[e.key] = false));
+  };
+  ;, []);
+
+  return <canvas ref={canvasRef} width={400} height={300} className="rounded shadow-lg border" />;
+};
+
+export default Game;

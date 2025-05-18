@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Game from "@components/Game";
 
 export default function Home() {
   return (
@@ -117,6 +118,10 @@ export default function Home() {
             players through innovative gameplay experiences.
           </p>
         </span>
+      </div>
+
+      <div>
+        <Game />
       </div>
     </main>
   );
