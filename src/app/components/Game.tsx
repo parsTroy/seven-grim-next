@@ -151,44 +151,29 @@ const DoomLikeGame = () => {
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
   
-    // Draw enemies as projected sprites in the 3D view
-    enemiesRef.current.forEach((enemy: Enemy) => {
-      if (!enemy.alive) return;
-      if (!isEnemyVisible(enemy)) return;
-      // Vector from player to enemy
-      const dx = enemy.x - posX.current;
-      const dy = enemy.y - posY.current;
-      // Player direction vector
-      const dirX = Math.cos(dir.current);
-      const dirY = Math.sin(dir.current);
-      // Camera plane (perpendicular to direction)
-      const planeX = -dirY;
-      const planeY = dirX;
-      // Transform enemy position to camera space
-      const invDet = 1.0 / (planeX * dirY - dirX * planeY);
-      const relX = dx;
-      const relY = dy;
-      const transformX = invDet * (dirY * relX - dirX * relY);
-      const transformY = invDet * (-planeY * relX + planeX * relY);
-      // Only draw if in front of player
-      if (transformY > 0) {
-        // Projected X position on screen
-        const enemyScreenX = Math.floor((width / 2) * (1 + transformX / transformY));
-        // Scale size by distance, clamp to min and max
-        const rawSize = Math.abs(Math.floor(height / transformY));
-        const enemySize = Math.max(Math.min(rawSize, 120), 20);
-        // Animation frame based on global tick
-        const frame = Math.floor((enemyAnimTick / 1) % 3);
-        const sprite = enemySprites[frame].current;
-        if (sprite) {
-          ctx.drawImage(
-            sprite,
-            enemyScreenX - enemySize / 2,
-            height - enemySize, // feet at floor
-            enemySize,
-            enemySize
-          );
-        }
+    // Sort enemies by distance (far to near)
+    type ProjectedEnemy = { enemy: Enemy; screenX: number; size: number; drawStartY: number; transformY: number };
+    const visibleEnemies: ProjectedEnemy[] = enemiesRef.current
+      .filter((enemy: Enemy) => enemy.alive && isEnemyVisible(enemy))
+      .map((enemy: Enemy) => {
+        const proj = projectEnemy(enemy);
+        return proj ? { enemy, ...proj } : null;
+      })
+      .filter(Boolean) as ProjectedEnemy[];
+    visibleEnemies.sort((a: ProjectedEnemy, b: ProjectedEnemy) => b.transformY - a.transformY);
+
+    visibleEnemies.forEach(({ enemy, screenX, size, drawStartY }: ProjectedEnemy) => {
+      // Animation frame based on global tick
+      const frame = Math.floor((enemyAnimTick / 1) % 3);
+      const sprite = enemySprites[frame].current;
+      if (sprite) {
+        ctx.drawImage(
+          sprite,
+          screenX - size / 2,
+          drawStartY,
+          size,
+          size
+        );
       }
     });
   
@@ -400,6 +385,40 @@ const DoomLikeGame = () => {
       }
     }
     return true;
+  }
+
+  // Helper: Project enemy to screen and return rendering info
+  function projectEnemy(enemy: Enemy) {
+    // Vector from player to enemy
+    const dx = enemy.x - posX.current;
+    const dy = enemy.y - posY.current;
+    // Player direction vector
+    const dirX = Math.cos(dir.current);
+    const dirY = Math.sin(dir.current);
+    // Camera plane (perpendicular to direction)
+    const planeX = -dirY;
+    const planeY = dirX;
+    // Transform enemy position to camera space
+    const invDet = 1.0 / (planeX * dirY - dirX * planeY);
+    const relX = dx;
+    const relY = dy;
+    const transformX = invDet * (dirY * relX - dirX * relY);
+    const transformY = invDet * (-planeY * relX + planeX * relY);
+    // Only draw if in front of player
+    if (transformY <= 0) return null;
+    // Projected X position on screen
+    const enemyScreenX = Math.floor((width / 2) * (1 + transformX / transformY));
+    // Scale size by distance, clamp to min and max
+    const rawSize = Math.abs(Math.floor(height / transformY));
+    const enemySize = Math.max(Math.min(rawSize, 120), 20);
+    // Projected floor position (feet at floor)
+    const drawStartY = Math.floor(height / 2 + height / (2 * transformY) - enemySize);
+    return {
+      screenX: enemyScreenX,
+      size: enemySize,
+      drawStartY: drawStartY,
+      transformY: transformY,
+    };
   }
 
   return (
