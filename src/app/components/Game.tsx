@@ -11,9 +11,13 @@ const DoomLikeGame = () => {
   const [gunFrameIndex, setGunFrameIndex] = useState(0);
   const [isFiring, setIsFiring] = useState(false);
 
-  const GUN_FRAME_WIDTH = 614;
-  const GUN_FRAME_HEIGHT = 527;
-  const GUN_ANIMATION_FRAMES = 5;
+  const gunIdleImage = useRef<HTMLImageElement | null>(null);
+  const gunFireImage = useRef<HTMLImageElement | null>(null);
+
+
+  const GUN_FRAME_WIDTH = 200;
+  const GUN_FRAME_HEIGHT = 200;
+  const GUN_ANIMATION_FRAMES = 2;
 
 
   const posX = useRef(100);
@@ -100,6 +104,15 @@ const DoomLikeGame = () => {
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
   
+    const image = isFiring ? gunFireImage.current : gunIdleImage.current;
+    if (!image) return;
+  
+    const frameWidth = GUN_FRAME_WIDTH;
+    const frameHeight = GUN_FRAME_HEIGHT;
+    const sx = gunFrameIndex * frameWidth;
+    const sy = 0
+  
+  
     const gunImage = new Image();
     gunImage.src = isFiring ? '/shotgun_fire.png' : '/shotgun_idle.png';
   
@@ -131,6 +144,20 @@ const DoomLikeGame = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const idleImg = new Image();
+    const fireImg = new Image();
+
+    idleImg.src = '/shotgun_idle.png';
+    fireImg.src = '/shotgun_fire.png';
+
+    idleImg.onload = () => {
+      gunIdleImage.current = idleImg;
+    };
+    
+    fireImg.onload = () => {
+      gunFireImage.current = fireImg;
+    };    
+
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
 
@@ -158,8 +185,14 @@ const DoomLikeGame = () => {
         if (isFiring) return;
       
         setIsFiring(true);
-        setTimeout(() => setIsFiring(false), 100);
-      }      
+        setGunFrameIndex(1);
+      
+        setTimeout(() => {
+          setIsFiring(false);
+          setGunFrameIndex(0);
+        }, 100);
+      }
+          
 
       keys.current[e.key] = true;
 
