@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { useRef, useEffect, useState } from 'react';
 
@@ -69,6 +70,12 @@ const DoomLikeGame = () => {
 
   // Add animation tick for enemy animation
   const [enemyAnimTick, setEnemyAnimTick] = useState(0);
+
+  // Round logic state
+  const [round, setRound] = useState(1);
+  const [isRoundPopup, setIsRoundPopup] = useState(false);
+  const [isCountdown, setIsCountdown] = useState(false);
+  const [countdownValue, setCountdownValue] = useState(3);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -497,6 +504,46 @@ const DoomLikeGame = () => {
     };
   }
 
+  // Helper to start a round
+  function startRound(newRound: number) {
+    setIsRoundPopup(true);
+    setTimeout(() => {
+      setIsRoundPopup(false);
+      spawnEnemies(3 + (newRound - 1) * 2);
+    }, 1200);
+  }
+
+  // On game start, start round 1
+  useEffect(() => {
+    if (playing) {
+      setRound(1);
+      setTimeout(() => startRound(1), 300);
+    }
+  }, [playing]);
+
+  // Watch for all enemies dead to trigger next round
+  useEffect(() => {
+    if (!playing) return;
+    if (enemiesRef.current.length === 0) return;
+    const allDead = enemiesRef.current.every((e: Enemy) => !e.alive);
+    if (allDead && !isCountdown && !isRoundPopup) {
+      setIsCountdown(true);
+      setCountdownValue(3);
+      let val = 3;
+      const interval = setInterval(() => {
+        val--;
+        setCountdownValue(val);
+        if (val === 0) {
+          clearInterval(interval);
+          setIsCountdown(false);
+          setRound((r: number) => r + 1);
+          setTimeout(() => startRound(round + 1), 200);
+        }
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [enemies, isCountdown, isRoundPopup, playing, round]);
+
   return (
     <div
       className="relative"
@@ -547,6 +594,16 @@ const DoomLikeGame = () => {
       {!playing && (
         <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-lg font-bold">
           Click to Play
+        </div>
+      )}
+      {isRoundPopup && (
+        <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-3xl font-bold z-20">
+          Round {round}
+        </div>
+      )}
+      {isCountdown && (
+        <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-2xl font-bold z-20">
+          Next round in {countdownValue}...
         </div>
       )}
     </div>
