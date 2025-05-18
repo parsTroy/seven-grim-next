@@ -15,11 +15,14 @@ const DoomLikeGame = () => {
   const gunIdleImage = useRef<HTMLImageElement | null>(null);
   const gunFireImage = useRef<HTMLImageElement | null>(null);
 
+  // Audio refs
+  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const shootSoundRef = useRef<HTMLAudioElement | null>(null);
+  const deathSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const GUN_FRAME_WIDTH = 200;
   const GUN_FRAME_HEIGHT = 200;
   const GUN_ANIMATION_FRAMES = 2;
-
 
   const posX = useRef(100);
   const posY = useRef(100);
@@ -253,6 +256,11 @@ const DoomLikeGame = () => {
         isFiringRef.current = true;
         setIsFiring(true);
         setGunFrameIndex(1);
+        // Play shoot sound
+        if (shootSoundRef.current) {
+          shootSoundRef.current.currentTime = 0;
+          shootSoundRef.current.play();
+        }
         // --- Shooting logic ---
         // Cast a ray from player forward
         const shootAngle = dir.current;
@@ -285,8 +293,13 @@ const DoomLikeGame = () => {
         });
         if (closestEnemy !== null) {
           (closestEnemy as Enemy).health -= 1;
+          // Play death sound only
           if ((closestEnemy as Enemy).health <= 0) {
             (closestEnemy as Enemy).alive = false;
+            if (deathSoundRef.current) {
+              deathSoundRef.current.currentTime = 0;
+              deathSoundRef.current.play();
+            }
           }
         }
         // --- End shooting logic ---
@@ -324,6 +337,28 @@ const DoomLikeGame = () => {
 
     // Animation timer for enemy walking
     const interval = setInterval(() => setEnemyAnimTick((tick: number) => tick + 1), 200);
+
+    // Play/pause music on game start/end
+    useEffect(() => {
+      if (!musicRef.current) {
+        musicRef.current = new window.Audio('/music.ogg');
+        musicRef.current.loop = true;
+        musicRef.current.volume = 0.5;
+      }
+      if (playing) {
+        musicRef.current.currentTime = 0;
+        musicRef.current.play();
+      } else {
+        musicRef.current.pause();
+        musicRef.current.currentTime = 0;
+      }
+    }, [playing]);
+
+    // Preload SFX
+    useEffect(() => {
+      shootSoundRef.current = new window.Audio('/shoot.wav');
+      deathSoundRef.current = new window.Audio('/death.wav');
+    }, []);
 
     return () => {
       window.removeEventListener('keydown', keyDownHandler);
