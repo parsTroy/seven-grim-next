@@ -88,7 +88,7 @@ const Game = () => {
     window.removeEventListener('keydown', (e) => (keys[e.key] = true));
     window.removeEventListener('keyup', (e) => (keys[e.key] = false));
   };
-  ;, []);
+}, []);
 
   return <canvas ref={canvasRef} width={400} height={300} className="rounded shadow-lg border" />;
 };
