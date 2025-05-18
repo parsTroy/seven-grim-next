@@ -111,6 +111,22 @@ const DoomLikeGame = () => {
   };
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx?.scale(dpr, dpr);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+      
     const keyDownHandler = (e: KeyboardEvent) => {
       if (!playing) return;
 
@@ -139,6 +155,7 @@ const DoomLikeGame = () => {
       window.removeEventListener('keydown', keyDownHandler);
       window.removeEventListener('keyup', keyUpHandler);
       document.body.style.overflow = '';
+      window.removeEventListener('resize', resizeCanvas);
     };
   }, [playing]);
 
