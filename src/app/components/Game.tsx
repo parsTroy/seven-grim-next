@@ -29,7 +29,7 @@ const Game = () => {
     let posX = 100, posY = 100;
     let dir = 0;
 
-    cons keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     const speed = 2;
 
     const update = () => {
