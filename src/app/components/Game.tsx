@@ -338,28 +338,6 @@ const DoomLikeGame = () => {
     // Animation timer for enemy walking
     const interval = setInterval(() => setEnemyAnimTick((tick: number) => tick + 1), 200);
 
-    // Play/pause music on game start/end
-    useEffect(() => {
-      if (!musicRef.current) {
-        musicRef.current = new window.Audio('/music.mp3');
-        musicRef.current.loop = true;
-        musicRef.current.volume = 0.5;
-      }
-      if (playing) {
-        musicRef.current.currentTime = 0;
-        musicRef.current.play();
-      } else {
-        musicRef.current.pause();
-        musicRef.current.currentTime = 0;
-      }
-    }, [playing]);
-
-    // Preload SFX
-    useEffect(() => {
-      shootSoundRef.current = new window.Audio('/shoot.mp3');
-      deathSoundRef.current = new window.Audio('/death.mp3');
-    }, []);
-
     return () => {
       window.removeEventListener('keydown', keyDownHandler);
       window.removeEventListener('keyup', keyUpHandler);
@@ -367,6 +345,28 @@ const DoomLikeGame = () => {
       window.removeEventListener('resize', resizeCanvas);
       clearInterval(interval);
     };
+  }, [playing]);
+
+  // Preload SFX (top-level useEffect)
+  useEffect(() => {
+    shootSoundRef.current = new window.Audio('/shoot.mp3');
+    deathSoundRef.current = new window.Audio('/death.mp3');
+  }, []);
+
+  // Play/pause music on game start/end (top-level useEffect)
+  useEffect(() => {
+    if (!musicRef.current) {
+      musicRef.current = new window.Audio('/music.mp3');
+      musicRef.current.loop = true;
+      musicRef.current.volume = 0.5;
+    }
+    if (playing) {
+      musicRef.current.currentTime = 0;
+      musicRef.current.play();
+    } else {
+      musicRef.current.pause();
+      musicRef.current.currentTime = 0;
+    }
   }, [playing]);
 
   // Helper: Get all valid spawn points (open tiles, not near player)
