@@ -48,6 +48,7 @@ const DoomLikeGame = () => {
     speed: number;
     alive: boolean;
     frame: number;
+    health: number;
   };
 
   const [enemies, setEnemies] = useState<Enemy[]>([]);
@@ -166,13 +167,15 @@ const DoomLikeGame = () => {
       // Animation frame based on global tick
       const frame = Math.floor((enemyAnimTick / 1) % 3);
       const sprite = enemySprites[frame].current;
+      // Increase enemy height
+      const tallSize = Math.max(Math.min(size * 1.7, 180), 28);
       if (sprite) {
         ctx.drawImage(
           sprite,
-          screenX - size / 2,
-          drawStartY,
-          size,
-          size
+          screenX - tallSize / 2,
+          drawStartY - (tallSize - size),
+          tallSize,
+          tallSize
         );
       }
     });
@@ -250,6 +253,43 @@ const DoomLikeGame = () => {
         isFiringRef.current = true;
         setIsFiring(true);
         setGunFrameIndex(1);
+        // --- Shooting logic ---
+        // Cast a ray from player forward
+        const shootAngle = dir.current;
+        let closestEnemy: Enemy | null = null;
+        let closestDist = Infinity;
+        enemiesRef.current.forEach((enemy: Enemy) => {
+          if (!enemy.alive) return;
+          // Project enemy to screen
+          const proj = projectEnemy(enemy);
+          if (!proj) return;
+          // Check if enemy is in the center of the screen (crosshair)
+          const crosshairX = width / 2;
+          // Allow a small tolerance (enemy width)
+          if (
+            proj.screenX > crosshairX - proj.size / 2 &&
+            proj.screenX < crosshairX + proj.size / 2
+          ) {
+            // Check occlusion (already filtered by visibleEnemies, but double check)
+            if (isEnemyVisible(enemy)) {
+              // Check distance
+              const dx = enemy.x - posX.current;
+              const dy = enemy.y - posY.current;
+              const dist = Math.hypot(dx, dy);
+              if (dist < closestDist) {
+                closestDist = dist;
+                closestEnemy = enemy;
+              }
+            }
+          }
+        });
+        if (closestEnemy !== null) {
+          (closestEnemy as Enemy).health -= 1;
+          if ((closestEnemy as Enemy).health <= 0) {
+            (closestEnemy as Enemy).alive = false;
+          }
+        }
+        // --- End shooting logic ---
         setTimeout(() => {
           isFiringRef.current = false;
           setIsFiring(false);
@@ -345,6 +385,7 @@ const DoomLikeGame = () => {
         speed: 0.1 + Math.random() * 0.1, // Slower speed
         alive: true,
         frame: 0,
+        health: 3,
       });
     }
     enemiesRef.current = newEnemies;
