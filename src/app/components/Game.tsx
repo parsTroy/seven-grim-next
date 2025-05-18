@@ -36,15 +36,15 @@ const Game = () => {
     const speed = 2;
 
     const update = () => {
-      if (keys['ArrowLeft']) dir -= 0.05;
-      if (keys['ArrowRight']) dir += 0.05;
+      if (keys['ArrowLeft']) dir.current -= 0.05;
+      if (keys['ArrowRight']) dir.current += 0.05;
       if (keys['ArrowUp']) {
-        posX += Math.cos(dir) * speed;
-        posY += Math.sin(dir) * speed;
+        posX += Math.cos(dir.current) * speed;
+        posY += Math.sin(dir.current) * speed;
       }
       if (keys['ArrowDown']) {
-        posX -= Math.cos(dir) * speed;
-        posY -= Math.sin(dir) * speed;
+        posX -= Math.cos(dir.current) * speed;
+        posY -= Math.sin(dir.current) * speed;
       }
     };
 
