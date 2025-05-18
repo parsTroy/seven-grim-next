@@ -48,7 +48,7 @@ const Game = () => {
     const draw = () => {
       if (!ctx) return;
       ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, wdith, height);
+      ctx.fillRect(0, 0, width, height);
 
       for (let x = 0; x < width; x++) {
         const rayAngle = dir - 0.5 + (x / width);
