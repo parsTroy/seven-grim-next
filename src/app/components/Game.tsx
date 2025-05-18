@@ -163,22 +163,34 @@ const DoomLikeGame = () => {
       .filter(Boolean) as ProjectedEnemy[];
     visibleEnemies.sort((a: ProjectedEnemy, b: ProjectedEnemy) => b.transformY - a.transformY);
 
-    visibleEnemies.forEach(({ enemy, screenX, size, drawStartY }: ProjectedEnemy) => {
+    visibleEnemies.forEach(({ enemy, screenX, size }: ProjectedEnemy) => {
       // Animation frame based on global tick
       const frame = Math.floor((enemyAnimTick / 1) % 3);
       const sprite = enemySprites[frame].current;
-      // Increase enemy height (larger scaling)
-      const tallSize = Math.max(Math.min(size * 3.0, 350), 32);
+      // Dramatically increase enemy height (larger scaling)
+      const tallSize = Math.max(Math.min(size * 5.0, 500), 32);
       if (sprite) {
         ctx.drawImage(
           sprite,
           screenX - tallSize / 2,
-          drawStartY - (tallSize - size),
+          height - tallSize, // feet at bottom of screen
           tallSize,
           tallSize
         );
       }
     });
+  
+    // Optional: Debug lines for alignment
+    ctx.strokeStyle = 'lime';
+    ctx.beginPath();
+    ctx.moveTo(0, height - 1);
+    ctx.lineTo(width, height - 1);
+    ctx.stroke();
+    ctx.strokeStyle = 'yellow';
+    ctx.beginPath();
+    ctx.moveTo(width / 2, 0);
+    ctx.lineTo(width / 2, height);
+    ctx.stroke();
   
     const image = isFiringRef.current ? gunFireImage.current : gunIdleImage.current;
     if (!image) return;
