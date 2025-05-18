@@ -167,8 +167,8 @@ const DoomLikeGame = () => {
       // Animation frame based on global tick
       const frame = Math.floor((enemyAnimTick / 1) % 3);
       const sprite = enemySprites[frame].current;
-      // Increase enemy height
-      const tallSize = Math.max(Math.min(size * 1.7, 180), 28);
+      // Increase enemy height (larger scaling)
+      const tallSize = Math.max(Math.min(size * 3.0, 350), 32);
       if (sprite) {
         ctx.drawImage(
           sprite,
