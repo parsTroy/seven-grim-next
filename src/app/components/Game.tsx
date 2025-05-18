@@ -41,6 +41,17 @@ const DoomLikeGame = () => {
   const mapHeight = map.length;
   const speed = 1;
 
+  // Enemy type
+  type Enemy = {
+    x: number;
+    y: number;
+    speed: number;
+    alive: boolean;
+  };
+
+  const [enemies, setEnemies] = useState<Enemy[]>([]);
+  const enemiesRef = useRef<Enemy[]>([]);
+
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
     const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
@@ -66,6 +77,18 @@ const DoomLikeGame = () => {
     if (map[tileY2]?.[tileX2] === 0) {
       posY.current = nextY;
     }
+
+    // Move enemies toward player
+    enemiesRef.current.forEach((enemy: Enemy) => {
+      if (!enemy.alive) return;
+      const dx = posX.current - enemy.x;
+      const dy = posY.current - enemy.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 1) {
+        enemy.x += (dx / dist) * enemy.speed;
+        enemy.y += (dy / dist) * enemy.speed;
+      }
+    });
   };   
 
   const draw = () => {
@@ -105,6 +128,21 @@ const DoomLikeGame = () => {
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
   
+    // Draw enemies as red circles
+    enemiesRef.current.forEach((enemy: Enemy) => {
+      if (!enemy.alive) return;
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(
+        (enemy.x / (mapWidth * tileSize)) * width,
+        (enemy.y / (mapHeight * tileSize)) * height,
+        10,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    });
+  
     const image = isFiringRef.current ? gunFireImage.current : gunIdleImage.current;
     if (!image) return;
   
@@ -127,6 +165,7 @@ const DoomLikeGame = () => {
       setPlaying(true);
       running.current = true;
       document.body.style.overflow = 'hidden';
+      spawnEnemies(3); // For first round, 3 enemies
       requestAnimationFrame(loop);
     }
   };
@@ -206,6 +245,39 @@ const DoomLikeGame = () => {
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [playing]);
+
+  function getRandomWalkablePosition(): { x: number; y: number } {
+    while (true) {
+      const tileX = Math.floor(Math.random() * mapWidth);
+      const tileY = Math.floor(Math.random() * mapHeight);
+      // Avoid walls and player spawn
+      if (
+        map[tileY][tileX] === 0 &&
+        Math.abs(tileX * tileSize - posX.current) > tileSize &&
+        Math.abs(tileY * tileSize - posY.current) > tileSize
+      ) {
+        return {
+          x: tileX * tileSize + tileSize / 2,
+          y: tileY * tileSize + tileSize / 2,
+        };
+      }
+    }
+  }
+
+  function spawnEnemies(count: number) {
+    const newEnemies: Enemy[] = [];
+    for (let i = 0; i < count; i++) {
+      const { x, y } = getRandomWalkablePosition();
+      newEnemies.push({
+        x,
+        y,
+        speed: 0.5 + Math.random() * 0.5,
+        alive: true,
+      });
+    }
+    enemiesRef.current = newEnemies;
+    setEnemies(newEnemies);
+  }
 
   return (
     <div
