@@ -11,7 +11,7 @@ const Game = () => {
   const posX = useRef(100);
   const posY = useRef(100);
   const dir = useRef(0);
-  const running = useReft(false);
+  const running = useRef(false);
   const keys = useRef<Record<string, boolean>>({});
 
   useEffect(() => {
