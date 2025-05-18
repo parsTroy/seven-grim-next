@@ -131,7 +131,7 @@ const Game = () => {
       style={{ width: `${width}px`, height: `${height}px`}}
       onClick={() => !playing && setPlaying(true)}
     >
-      <canvas ref={canvasRef} width={width} height={height} className="rounded shadow-lg border cursor-crosshair" />;
+      <canvas ref={canvasRef} width={width} height={height} className="rounded shadow-lg border cursor-crosshair" />
       {!playing && (
         <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-lg font-bold">
           Click to Play 
