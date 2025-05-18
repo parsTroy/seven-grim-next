@@ -101,7 +101,7 @@ const Game = () => {
       document.body.style.overflow = '';
     };
 
-    const keyDownHandler = (e: keyboardEvent) => {
+    const keyDownHandler = (e: KeyboardEvent) => {
       if (!playing) return;
       if (e.key === 'Escape') {
         stopGame();
