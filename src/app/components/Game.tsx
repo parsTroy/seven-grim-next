@@ -170,7 +170,7 @@ const DoomLikeGame = () => {
           width: '100%',
           height: '100%',
           display: 'block',
-          cursor: isPlaying ? 'none' : 'default',
+          cursor: playing ? 'none' : 'default',
         }}
       />
       {!playing && (
