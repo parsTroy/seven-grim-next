@@ -33,7 +33,7 @@ const DoomLikeGame = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
     const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
   
-    dir.current += rotStep * 0.03;
+    dir.current += rotStep * 0.0015;
   
     const moveX = Math.cos(dir.current) * moveStep;
     const moveY = Math.sin(dir.current) * moveStep;
@@ -148,11 +148,30 @@ const DoomLikeGame = () => {
       style={{ width: `${width}px`, height: `${height}px` }}
       onClick={handleClickToStart}
     >
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+          width: '4px',
+          height: '4px',
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          zIndex: 10,
+        }}
+      />
       <canvas
         ref={canvasRef}
-        width={width}
-        height={height}
-        className="rounded shadow-lg border cursor-crosshair"
+        width={640}
+        height={400}
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          cursor: isPlaying ? 'none' : 'default',
+        }}
       />
       {!playing && (
         <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-lg font-bold">
