@@ -8,6 +8,12 @@ const Game = () => {
   const width = 400;
   const height = 300;
 
+  const posX = useRef(100);
+  const posY = useRef(100);
+  const dir = useRef(0);
+  const running = useReft(false);
+  const keys = useRef<Record<string, boolean>>({});
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -27,12 +33,7 @@ const Game = () => {
     const mapWidth = map[0].length;
     const mapHeight = map.length;
 
-    let posX = 100, posY = 100;
-    let dir = 0;
-
-    const keys: Record<string, boolean> = {};
     const speed = 2;
-    let running = false;
 
     const update = () => {
       if (keys['ArrowLeft']) dir -= 0.05;
@@ -82,37 +83,27 @@ const Game = () => {
     };
 
     const loop = () => {
-      if (!running) return;
+      if (!running.current) return;
       update();
       draw();
       requestAnimationFrame(loop);
     };
 
-    const startGame = () => {
-      setPlaying(true);
-      running = true;
-      document.body.style.overflow = 'hidden';
-      loop();
-    };
-
-    const stopGame = () => {
-      setPlaying(false);
-      running = false;
-      document.body.style.overflow = '';
-    };
-
     const keyDownHandler = (e: KeyboardEvent) => {
       if (!playing) return;
       if (e.key === 'Escape') {
-        stopGame();
+        running.current = false;
+        document.body.syle.overflow = '';
         return;
       }
       keys[e.key] = true;
-      e.preventDefault();
-    }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+    };
 
     const keyUpHandler = (e: KeyboardEvent) => {
-      keys[e.key] = false;
+      keys.current[e.key] = false;
     };
 
     window.addEventListener('keydown', keyDownHandler);
@@ -124,6 +115,42 @@ const Game = () => {
       document.body.style.overflow = '';
     };
   }, [playing]);
+
+  const handleClickToStart = () => {
+    if (!playing) {
+      setPlaying(true);
+      running.current = true;
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            requestAnimationFrame(() => {
+              running.current && loopWrapper();
+            });
+          }
+        }
+      });
+    }
+  };
+
+  const loopWrapper = () => {
+    const canvas = canvasRef.current;
+      if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+    const loop = () => {
+      if (!running.current) return;
+      const e = new Event('tick');
+      window.dispatchEvent(e);
+      const update = new CustomEvent('frame');
+      window.dispatchEvent(update);
+      requestAnimationFrame(loop);
+    };
+    loop();
+  };
 
   return ( 
     <div
