@@ -120,8 +120,12 @@ export default function Home() {
         </span>
       </div>
 
-      <div>
+      <div className="flex flex-col items-center justify-center">
         <Game />
+        <div className="text-sm text-gray-500">
+          "Arrow Leys"
+          "Space Bar"
+        </div>
       </div>
     </main>
   );
