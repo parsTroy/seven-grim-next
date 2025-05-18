@@ -33,7 +33,7 @@ const DoomLikeGame = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
     const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
   
-    dir.current += rotStep * 0.0015;
+    dir.current += rotStep * 0.015;
   
     const moveX = Math.cos(dir.current) * moveStep;
     const moveY = Math.sin(dir.current) * moveStep;
