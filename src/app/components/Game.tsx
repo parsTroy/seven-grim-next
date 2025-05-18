@@ -76,6 +76,7 @@ const DoomLikeGame = () => {
   const [isRoundPopup, setIsRoundPopup] = useState(false);
   const [isCountdown, setIsCountdown] = useState(false);
   const [countdownValue, setCountdownValue] = useState(3);
+  const [enemiesInRound, setEnemiesInRound] = useState(0);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -506,9 +507,11 @@ const DoomLikeGame = () => {
   // Helper to start a round
   function startRound(newRound: number) {
     setIsRoundPopup(true);
+    const numEnemies = 3 + (newRound - 1) * 2;
     setTimeout(() => {
       setIsRoundPopup(false);
-      spawnEnemies(3 + (newRound - 1) * 2);
+      spawnEnemies(numEnemies);
+      setEnemiesInRound(numEnemies);
     }, 1200);
   }
 
@@ -520,12 +523,12 @@ const DoomLikeGame = () => {
     }
   }, [playing]);
 
-  // Watch for all enemies dead to trigger next round
+  // Watch for all enemies dead to trigger next round (robust)
   useEffect(() => {
     if (!playing) return;
-    if (enemiesRef.current.length === 0) return;
-    const allDead = enemiesRef.current.every((e: Enemy) => !e.alive);
-    if (allDead && !isCountdown && !isRoundPopup) {
+    if (enemiesInRound === 0) return;
+    const deadCount = enemies.filter((e: Enemy) => !e.alive).length;
+    if (deadCount === enemiesInRound && !isCountdown && !isRoundPopup) {
       setIsCountdown(true);
       setCountdownValue(3);
       let val = 3;
@@ -541,7 +544,7 @@ const DoomLikeGame = () => {
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [enemies, isCountdown, isRoundPopup, playing, round]);
+  }, [enemies, isCountdown, isRoundPopup, playing, round, enemiesInRound]);
 
   return (
     <div
