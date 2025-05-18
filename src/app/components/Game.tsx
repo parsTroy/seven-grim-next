@@ -77,6 +77,7 @@ const DoomLikeGame = () => {
   const [isCountdown, setIsCountdown] = useState(false);
   const [countdownValue, setCountdownValue] = useState(3);
   const [enemiesInRound, setEnemiesInRound] = useState(0);
+  const [roundInProgress, setRoundInProgress] = useState(false);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -513,6 +514,7 @@ const DoomLikeGame = () => {
       setIsRoundPopup(false);
       spawnEnemies(numEnemies);
       setEnemiesInRound(numEnemies);
+      setRoundInProgress(true);
     }, 1200);
   }
 
@@ -528,19 +530,21 @@ const DoomLikeGame = () => {
   useEffect(() => {
     if (!playing) return;
     if (enemiesInRound === 0) return;
+    if (!roundInProgress) return;
     const deadCount = enemies.filter((e: Enemy) => !e.alive).length;
     if (deadCount === enemiesInRound && !isCountdown && !isRoundPopup) {
       setIsCountdown(true);
       setCountdownValue(3);
+      setRoundInProgress(false);
     }
-  }, [enemies, isCountdown, isRoundPopup, playing, round, enemiesInRound]);
+  }, [enemies, isCountdown, isRoundPopup, playing, round, enemiesInRound, roundInProgress]);
 
   // Robust countdown effect
   useEffect(() => {
     if (!isCountdown) return;
     if (countdownValue > 0) {
       const timeout = setTimeout(() => {
-        setCountdownValue(v => v - 1);
+        setCountdownValue((v: number) => v - 1);
       }, 1000);
       return () => clearTimeout(timeout);
     } else if (countdownValue === 0) {
