@@ -115,11 +115,11 @@ const Game = () => {
       keys[e.key] = false;
     };
 
-    window.addEventListener('keydown', keyDownHandler;
-    window.addEventListener('keyup', keyUpHandler;
+    window.addEventListener('keydown', keyDownHandler);
+    window.addEventListener('keyup', keyUpHandler);
 
     return () => {
-      window.removeEventListener('keydown', keyDownHandler;
+      window.removeEventListener('keydown', keyDownHandler);
       window.removeEventListener('keyup', keyUpHandler);
       document.body.style.overflow = '';
     };
