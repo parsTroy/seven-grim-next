@@ -85,8 +85,17 @@ const DoomLikeGame = () => {
       const dy = posY.current - enemy.y;
       const dist = Math.hypot(dx, dy);
       if (dist > 1) {
-        enemy.x += (dx / dist) * enemy.speed;
-        enemy.y += (dy / dist) * enemy.speed;
+        // Try to move toward player, but check for wall collision
+        const stepX = (dx / dist) * enemy.speed;
+        const stepY = (dy / dist) * enemy.speed;
+        const nextX = enemy.x + stepX;
+        const nextY = enemy.y + stepY;
+        if (isWalkable(nextX, enemy.y)) {
+          enemy.x = nextX;
+        }
+        if (isWalkable(enemy.x, nextY)) {
+          enemy.y = nextY;
+        }
       }
     });
   };   
@@ -131,6 +140,7 @@ const DoomLikeGame = () => {
     // Draw enemies as red circles
     enemiesRef.current.forEach((enemy: Enemy) => {
       if (!enemy.alive) return;
+      // Project map position to screen (top-down for now)
       ctx.fillStyle = 'red';
       ctx.beginPath();
       ctx.arc(
@@ -246,28 +256,38 @@ const DoomLikeGame = () => {
     };
   }, [playing]);
 
-  function getRandomWalkablePosition(): { x: number; y: number } {
-    while (true) {
-      const tileX = Math.floor(Math.random() * mapWidth);
-      const tileY = Math.floor(Math.random() * mapHeight);
-      // Avoid walls and player spawn
-      if (
-        map[tileY][tileX] === 0 &&
-        Math.abs(tileX * tileSize - posX.current) > tileSize &&
-        Math.abs(tileY * tileSize - posY.current) > tileSize
-      ) {
-        return {
-          x: tileX * tileSize + tileSize / 2,
-          y: tileY * tileSize + tileSize / 2,
-        };
+  // Helper: Get all valid spawn points (open tiles, not near player)
+  function getValidSpawnPoints(): { x: number; y: number }[] {
+    const points: { x: number; y: number }[] = [];
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        if (
+          map[y][x] === 0 &&
+          Math.abs(x * tileSize - posX.current) > tileSize * 2 &&
+          Math.abs(y * tileSize - posY.current) > tileSize * 2
+        ) {
+          points.push({
+            x: x * tileSize + tileSize / 2,
+            y: y * tileSize + tileSize / 2,
+          });
+        }
       }
     }
+    return points;
   }
 
+  // Modified spawnEnemies to use fixed spawn points
   function spawnEnemies(count: number) {
+    const spawnPoints = getValidSpawnPoints();
     const newEnemies: Enemy[] = [];
-    for (let i = 0; i < count; i++) {
-      const { x, y } = getRandomWalkablePosition();
+    const usedIndices = new Set<number>();
+    for (let i = 0; i < count && spawnPoints.length > 0; i++) {
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * spawnPoints.length);
+      } while (usedIndices.has(idx) && usedIndices.size < spawnPoints.length);
+      usedIndices.add(idx);
+      const { x, y } = spawnPoints[idx];
       newEnemies.push({
         x,
         y,
@@ -277,6 +297,17 @@ const DoomLikeGame = () => {
     }
     enemiesRef.current = newEnemies;
     setEnemies(newEnemies);
+  }
+
+  // Helper: Check if a position is walkable
+  function isWalkable(x: number, y: number): boolean {
+    const tileX = Math.floor(x / tileSize);
+    const tileY = Math.floor(y / tileSize);
+    return (
+      tileX >= 0 && tileX < mapWidth &&
+      tileY >= 0 && tileY < mapHeight &&
+      map[tileY][tileX] === 0
+    );
   }
 
   return (
