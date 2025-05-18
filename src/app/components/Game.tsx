@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [playing, setPlaying] = useState(false);
   const width = 400;
   const height = 300;
 
@@ -31,6 +32,7 @@ const Game = () => {
 
     const keys: Record<string, boolean> = {};
     const speed = 2;
+    let running = false;
 
     const update = () => {
       if (keys['ArrowLeft']) dir -= 0.05;
@@ -80,23 +82,63 @@ const Game = () => {
     };
 
     const loop = () => {
+      if (!running) return;
       update();
       draw();
       requestAnimationFrame(loop);
     };
 
-    window.addEventListener('keydown', (e) => (keys[e.key] = true));
-    window.addEventListener('keyup', (e) => (keys[e.key] = false));
+    const startGame = () => {
+      setPlaying(true);
+      running = true;
+      document.body.style.overflow = 'hidden';
+      loop();
+    };
 
-    loop();
+    const stopGame = () => {
+      setPlaying(false);
+      running = false;
+      document.body.style.overflow = '';
+    };
+
+    const keyDownHandler = (e: keyboardEvent) => {
+      if (!playing) return;
+      if (e.key === 'Escape') {
+        stopGame();
+        return;
+      }
+      keys[e.key] = true;
+      e.preventDefault();
+    }
+
+    const keyUpHandler = (e: KeyboardEvent) => {
+      keys[e.key] = false;
+    };
+
+    window.addEventListener('keydown', keyDownHandler;
+    window.addEventListener('keyup', keyUpHandler;
 
     return () => {
-      window.removeEventListener('keydown', (e) => (keys[e.key] = true));
-      window.removeEventListener('keyup', (e) => (keys[e.key] = false));
+      window.removeEventListener('keydown', keyDownHandler;
+      window.removeEventListener('keyup', keyUpHandler);
+      document.body.style.overflow = '';
     };
-  }, []);
+  }, [playing]);
 
-  return <canvas ref={canvasRef} width={400} height={300} className="rounded shadow-lg border" />;
+  return ( 
+    <div
+      className="relative"
+      style={{ width: `${width}px`, height: `${height}px`}}
+      onClick={() => !playing && setPlaying(true)}
+    >
+      <canvas ref={canvasRef} width={width} height={height} className="rounded shadow-lg border cursor-crosshair" />;
+      {!playing && (
+        <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-lg font-bold">
+          Click to Play 
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Game;
