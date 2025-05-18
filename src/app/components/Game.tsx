@@ -8,6 +8,13 @@ const DoomLikeGame = () => {
   const height = 300;
 
   const [playing, setPlaying] = useState(false);
+  const [gunFrameIndex, setGunFrameIndex] = useState(0);
+  const [isFiring, setIsFiring] = useState(false);
+
+  const GUN_FRAME_WIDTH = 614;
+  const GUN_FRAME_HEIGHT = 527;
+  const GUN_ANIMATION_FRAMES = 5;
+
 
   const posX = useRef(100);
   const posY = useRef(100);
@@ -92,6 +99,26 @@ const DoomLikeGame = () => {
       ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
+
+    const gunImage = new Image();
+    gunImage.src = '/sprites/sg-sprite.png';
+
+    gunImage.onload = () => {
+      const gunX = width / 2 - GUN_FRAME_WIDTH / 2;
+      const gunY = height - GUN_FRAME_HEIGHT + 20;
+
+      ctx.drawImage(
+        gunImage,
+        gunFrameIndex * GUN_FRAME_WIDTH,
+        0,
+        GUN_FRAME_WIDTH,
+        GUN_FRAME_HEIGHT,
+        gunX,
+        gunY,
+        GUN_FRAME_WIDTH,
+        GUN_FRAME_HEIGHT
+      );
+    };
   };
 
   const loop = () => {
@@ -137,6 +164,25 @@ const DoomLikeGame = () => {
         return;
       }
 
+      if (e.code === 'Space') {
+        if (isFiring) return;
+      
+        setIsFiring(true);
+        let frame = 0;
+      
+        const anim = setInterval(() => {
+          setGunFrameIndex(frame);
+          frame++;
+      
+          if (frame >= GUN_ANIMATION_FRAMES) {
+            clearInterval(anim);
+            setGunFrameIndex(0);
+            setIsFiring(false);
+          }
+        }, 80);
+      }
+      
+
       keys.current[e.key] = true;
 
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
@@ -179,9 +225,9 @@ const DoomLikeGame = () => {
           zIndex: 10,
         }}
       />
-      {playing && (
+      {/* {playing && (
         <img
-          src="/shotgoin.png"
+          src={gunFrame === 'fire' ? '/shotgun_fire.png' : '/shotgun_idle.png'}
           alt="Gun"
           style={{
             position: 'absolute',
@@ -191,9 +237,10 @@ const DoomLikeGame = () => {
             width: '200px',
             zIndex: 5,
             pointerEvents: 'none',
+            transition: 'filter 0.1s ease',
           }}
         />
-      )}
+      )} */}
       <canvas
         ref={canvasRef}
         width={640}
