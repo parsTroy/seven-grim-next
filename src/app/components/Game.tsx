@@ -27,20 +27,28 @@ const DoomLikeGame = () => {
   const tileSize = 64;
   const mapWidth = map[0].length;
   const mapHeight = map.length;
-  const speed = 2;
+  const speed = 1;
 
   const update = () => {
-    if (keys.current['ArrowLeft']) dir.current -= 0.05;
-    if (keys.current['ArrowRight']) dir.current += 0.05;
-    if (keys.current['ArrowUp']) {
-      posX.current += Math.cos(dir.current) * speed;
-      posY.current += Math.sin(dir.current) * speed;
+    const nextX = posX.current;
+    const nextY = posY.current;
+  
+    const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
+    const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
+  
+    dir.current += rotStep * 0.05;
+  
+    const newX = posX.current + Math.cos(dir.current) * moveStep;
+    const newY = posY.current + Math.sin(dir.current) * moveStep;
+  
+    const tileX = Math.floor(newX / tileSize);
+    const tileY = Math.floor(newY / tileSize);
+  
+    if (map[tileY]?.[tileX] === 0) {
+      posX.current = newX;
+      posY.current = newY;
     }
-    if (keys.current['ArrowDown']) {
-      posX.current -= Math.cos(dir.current) * speed;
-      posY.current -= Math.sin(dir.current) * speed;
-    }
-  };
+  };  
 
   const draw = () => {
     const canvas = canvasRef.current;
