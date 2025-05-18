@@ -156,7 +156,7 @@ const Game = () => {
     <div
       className="relative"
       style={{ width: `${width}px`, height: `${height}px`}}
-      onClick={() => !playing && setPlaying(true)}
+      onClick={handleClickToStart}
     >
       <canvas ref={canvasRef} width={width} height={height} className="rounded shadow-lg border cursor-crosshair" />
       {!playing && (
