@@ -107,20 +107,10 @@ const DoomLikeGame = () => {
     const image = isFiring ? gunFireImage.current : gunIdleImage.current;
     if (!image) return;
   
-    const frameWidth = GUN_FRAME_WIDTH;
-    const frameHeight = GUN_FRAME_HEIGHT;
-    const sx = gunFrameIndex * frameWidth;
-    const sy = 0
-  
-  
-    const gunImage = new Image();
-    gunImage.src = isFiring ? '/shotgun_fire.png' : '/shotgun_idle.png';
-  
-    gunImage.onload = () => {
-      const gunX = width / 2 - gunImage.width / 2;
-      const gunY = height - gunImage.height + 20;
-      ctx.drawImage(gunImage, gunX, gunY);
-    };
+    // Center the gun at the bottom of the screen
+    const gunX = width / 2 - image.width / 2;
+    const gunY = height - image.height + 20;
+    ctx.drawImage(image, gunX, gunY);
   };
   
 
