@@ -143,6 +143,7 @@ const DoomLikeGame = () => {
     // Draw enemies as projected sprites in the 3D view
     enemiesRef.current.forEach((enemy: Enemy) => {
       if (!enemy.alive) return;
+      if (!isEnemyVisible(enemy)) return;
       // Vector from player to enemy
       const dx = enemy.x - posX.current;
       const dy = enemy.y - posY.current;
@@ -162,15 +163,16 @@ const DoomLikeGame = () => {
       if (transformY > 0) {
         // Projected X position on screen
         const enemyScreenX = Math.floor((width / 2) * (1 + transformX / transformY));
-        // Scale size by distance
-        const enemySize = Math.abs(Math.floor(height / transformY));
-        // Draw circle at projected position (bottom aligned)
+        // Scale size by distance, clamp to minimum
+        const rawSize = Math.abs(Math.floor(height / transformY));
+        const enemySize = Math.max(rawSize, 20);
+        // Draw circle at projected position (centered vertically for now)
         ctx.fillStyle = 'red';
         ctx.beginPath();
         ctx.arc(
           enemyScreenX,
-          height - enemySize / 2 - 10, // bottom of screen
-          Math.max(enemySize / 2, 5),
+          height / 2, // center vertically for now
+          enemySize / 2,
           0,
           Math.PI * 2
         );
@@ -346,6 +348,31 @@ const DoomLikeGame = () => {
       tileY >= 0 && tileY < mapHeight &&
       map[tileY][tileX] === 0
     );
+  }
+
+  // Helper: Raycast from player to enemy to check for wall occlusion
+  function isEnemyVisible(enemy: Enemy): boolean {
+    const dx = enemy.x - posX.current;
+    const dy = enemy.y - posY.current;
+    const dist = Math.hypot(dx, dy);
+    const steps = Math.ceil(dist / 4); // step size: 4px
+    for (let i = 1; i < steps; i++) {
+      const t = i / steps;
+      const x = posX.current + dx * t;
+      const y = posY.current + dy * t;
+      const tileX = Math.floor(x / tileSize);
+      const tileY = Math.floor(y / tileSize);
+      if (
+        tileX < 0 || tileX >= mapWidth ||
+        tileY < 0 || tileY >= mapHeight
+      ) {
+        return false;
+      }
+      if (map[tileY][tileX] > 0) {
+        return false; // Wall blocks view
+      }
+    }
+    return true;
   }
 
   return (
