@@ -54,7 +54,7 @@ const Game = () => {
       ctx.fillRect(0, 0, width, height);
 
       for (let x = 0; x < width; x++) {
-        const rayAngle = dir - 0.5 + (x / width);
+        const rayAngle = dir.current - 0.5 + (x / width);
         let rayX = Math.cos(rayAngle);
         let rayY = Math.sin(rayAngle);
 
