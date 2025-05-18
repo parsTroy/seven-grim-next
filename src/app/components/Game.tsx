@@ -1,6 +1,6 @@
 'use client'
 
-import { useref, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
