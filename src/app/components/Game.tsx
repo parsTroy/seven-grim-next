@@ -78,6 +78,7 @@ const DoomLikeGame = () => {
   const [countdownValue, setCountdownValue] = useState(3);
   const [enemiesInRound, setEnemiesInRound] = useState(0);
   const [roundInProgress, setRoundInProgress] = useState(false);
+  const currentRoundRef = useRef(1);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -510,6 +511,7 @@ const DoomLikeGame = () => {
   function startRound(newRound: number) {
     setIsRoundPopup(true);
     const numEnemies = 3 + (newRound - 1) * 2;
+    currentRoundRef.current = newRound;
     setTimeout(() => {
       setIsRoundPopup(false);
       spawnEnemies(numEnemies);
@@ -531,6 +533,7 @@ const DoomLikeGame = () => {
     if (!playing) return;
     if (enemiesInRound === 0) return;
     if (!roundInProgress) return;
+    if (currentRoundRef.current !== round) return;
     const deadCount = enemies.filter((e: Enemy) => !e.alive).length;
     if (deadCount === enemiesInRound && !isCountdown && !isRoundPopup) {
       setIsCountdown(true);
