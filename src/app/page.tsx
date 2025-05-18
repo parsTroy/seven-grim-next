@@ -123,8 +123,10 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center">
         <Game />
         <div className="text-sm text-gray-500">
-          {"Arrow Leys"}
-          {"Space Bar"}
+          {"Controls: "}
+          {"Arrow Keys to move "}
+          {"Space Bar to shoot "}
+          {"Click to start"}
         </div>
       </div>
     </main>
