@@ -68,20 +68,20 @@ const DoomLikeGame = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
+  
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
-
+  
     for (let x = 0; x < width; x++) {
       const rayAngle = dir.current - 0.5 + (x / width);
       const rayX = Math.cos(rayAngle);
       const rayY = Math.sin(rayAngle);
-
+  
       let distance = 0;
       while (distance < 300) {
         const testX = Math.floor((posX.current + rayX * distance) / tileSize);
         const testY = Math.floor((posY.current + rayY * distance) / tileSize);
-
+  
         if (
           testX < 0 ||
           testX >= mapWidth ||
@@ -91,35 +91,25 @@ const DoomLikeGame = () => {
         ) {
           break;
         }
-
+  
         distance += 1;
       }
-
+  
       const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
       ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
-
+  
     const gunImage = new Image();
-    gunImage.src = '/sprites/sg-sprite.png';
-
+    gunImage.src = isFiring ? '/shotgun_fire.png' : '/shotgun_idle.png';
+  
     gunImage.onload = () => {
-      const gunX = width / 2 - GUN_FRAME_WIDTH / 2;
-      const gunY = height - GUN_FRAME_HEIGHT + 20;
-
-      ctx.drawImage(
-        gunImage,
-        gunFrameIndex * GUN_FRAME_WIDTH,
-        0,
-        GUN_FRAME_WIDTH,
-        GUN_FRAME_HEIGHT,
-        gunX,
-        gunY,
-        GUN_FRAME_WIDTH,
-        GUN_FRAME_HEIGHT
-      );
+      const gunX = width / 2 - gunImage.width / 2;
+      const gunY = height - gunImage.height + 20;
+      ctx.drawImage(gunImage, gunX, gunY);
     };
   };
+  
 
   const loop = () => {
     if (!running.current) return;
@@ -168,20 +158,8 @@ const DoomLikeGame = () => {
         if (isFiring) return;
       
         setIsFiring(true);
-        let frame = 0;
-      
-        const anim = setInterval(() => {
-          setGunFrameIndex(frame);
-          frame++;
-      
-          if (frame >= GUN_ANIMATION_FRAMES) {
-            clearInterval(anim);
-            setGunFrameIndex(0);
-            setIsFiring(false);
-          }
-        }, 80);
-      }
-      
+        setTimeout(() => setIsFiring(false), 100);
+      }      
 
       keys.current[e.key] = true;
 
