@@ -224,7 +224,7 @@ const DoomLikeGame = () => {
   
 
   const loop = () => {
-    if (!running.current) return;
+    if (!running.current || isGameOver) return;
     update();
     draw();
     requestAnimationFrame(loop);
@@ -276,7 +276,7 @@ const DoomLikeGame = () => {
     window.addEventListener('resize', resizeCanvas);
       
     const keyDownHandler = (e: KeyboardEvent) => {
-      if (!playing) return;
+      if (!playing || isGameOver) return;
 
       if (e.key === 'Escape') {
         running.current = false;
@@ -354,6 +354,7 @@ const DoomLikeGame = () => {
     };
 
     const keyUpHandler = (e: KeyboardEvent) => {
+      if (isGameOver) return;
       keys.current[e.key] = false;
     };
 
@@ -380,7 +381,7 @@ const DoomLikeGame = () => {
       window.removeEventListener('resize', resizeCanvas);
       clearInterval(interval);
     };
-  }, [playing]);
+  }, [playing, isGameOver]);
 
   // Preload SFX (top-level useEffect)
   useEffect(() => {
