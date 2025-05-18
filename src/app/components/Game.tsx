@@ -137,20 +137,42 @@ const DoomLikeGame = () => {
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
   
-    // Draw enemies as red circles
+    // Draw enemies as projected sprites in the 3D view
     enemiesRef.current.forEach((enemy: Enemy) => {
       if (!enemy.alive) return;
-      // Project map position to screen (top-down for now)
-      ctx.fillStyle = 'red';
-      ctx.beginPath();
-      ctx.arc(
-        (enemy.x / (mapWidth * tileSize)) * width,
-        (enemy.y / (mapHeight * tileSize)) * height,
-        10,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
+      // Vector from player to enemy
+      const dx = enemy.x - posX.current;
+      const dy = enemy.y - posY.current;
+      // Player direction vector
+      const dirX = Math.cos(dir.current);
+      const dirY = Math.sin(dir.current);
+      // Camera plane (perpendicular to direction)
+      const planeX = -dirY;
+      const planeY = dirX;
+      // Transform enemy position to camera space
+      const invDet = 1.0 / (planeX * dirY - dirX * planeY);
+      const relX = dx;
+      const relY = dy;
+      const transformX = invDet * (dirY * relX - dirX * relY);
+      const transformY = invDet * (-planeY * relX + planeX * relY);
+      // Only draw if in front of player
+      if (transformY > 0) {
+        // Projected X position on screen
+        const enemyScreenX = Math.floor((width / 2) * (1 + transformX / transformY));
+        // Scale size by distance
+        const enemySize = Math.abs(Math.floor(height / transformY));
+        // Draw circle at projected position (bottom aligned)
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(
+          enemyScreenX,
+          height - enemySize / 2 - 10, // bottom of screen
+          Math.max(enemySize / 2, 5),
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
     });
   
     const image = isFiringRef.current ? gunFireImage.current : gunIdleImage.current;
