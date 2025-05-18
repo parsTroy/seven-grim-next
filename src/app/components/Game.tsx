@@ -10,6 +10,7 @@ const DoomLikeGame = () => {
   const [playing, setPlaying] = useState(false);
   const [gunFrameIndex, setGunFrameIndex] = useState(0);
   const [isFiring, setIsFiring] = useState(false);
+  const isFiringRef = useRef(false);
 
   const gunIdleImage = useRef<HTMLImageElement | null>(null);
   const gunFireImage = useRef<HTMLImageElement | null>(null);
@@ -104,7 +105,7 @@ const DoomLikeGame = () => {
       ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
     }
   
-    const image = isFiring ? gunFireImage.current : gunIdleImage.current;
+    const image = isFiringRef.current ? gunFireImage.current : gunIdleImage.current;
     if (!image) return;
   
     // Center the gun at the bottom of the screen
@@ -172,12 +173,12 @@ const DoomLikeGame = () => {
       }
 
       if (e.code === 'Space') {
-        if (isFiring) return;
-      
+        if (isFiringRef.current) return;
+        isFiringRef.current = true;
         setIsFiring(true);
         setGunFrameIndex(1);
-      
         setTimeout(() => {
+          isFiringRef.current = false;
           setIsFiring(false);
           setGunFrameIndex(0);
         }, 100);
