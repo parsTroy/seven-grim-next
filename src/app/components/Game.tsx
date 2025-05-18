@@ -96,7 +96,7 @@ const Game = () => {
         document.body.style.overflow = '';
         return;
       }
-      keys[e.key] = true;
+      keys.current[e.key] = true;
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         e.preventDefault();
       }
