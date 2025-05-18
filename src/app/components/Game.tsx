@@ -162,6 +162,19 @@ const DoomLikeGame = () => {
           zIndex: 10,
         }}
       />
+      <img
+        src="/shotgoin.png"
+        alt="Gun"
+        style={{
+          position: 'absolute',
+          bottom: '0',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '200px',
+          zIndex: 5,
+          pointerEvents: 'none',
+        }}
+      />
       <canvas
         ref={canvasRef}
         width={640}
