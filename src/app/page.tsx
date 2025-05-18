@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Game from "../app/components/Game.tsx";
+import Game from "../app/components/Game";
 
 export default function Home() {
   return (
