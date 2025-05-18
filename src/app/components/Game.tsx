@@ -212,7 +212,6 @@ const DoomLikeGame = () => {
       setPlaying(true);
       running.current = true;
       document.body.style.overflow = 'hidden';
-      spawnEnemies(3); // For first round, 3 enemies
       requestAnimationFrame(loop);
     }
   };
