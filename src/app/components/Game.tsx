@@ -93,7 +93,7 @@ const Game = () => {
       if (!playing) return;
       if (e.key === 'Escape') {
         running.current = false;
-        document.body.syle.overflow = '';
+        document.body.sytle.overflow = '';
         return;
       }
       keys[e.key] = true;
