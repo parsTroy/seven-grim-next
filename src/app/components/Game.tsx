@@ -75,7 +75,7 @@ const Game = () => {
 
         const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
         ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
-        ctx.fillRect(X, (height - wallHeight) / 2, 1, wallHeight);
+        ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
       }
     };
 
