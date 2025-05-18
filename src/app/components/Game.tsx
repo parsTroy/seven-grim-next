@@ -52,6 +52,9 @@ const DoomLikeGame = () => {
   const [enemies, setEnemies] = useState<Enemy[]>([]);
   const enemiesRef = useRef<Enemy[]>([]);
 
+  // At the top, add a constant for minimum spawn distance (in tiles)
+  const MIN_SPAWN_DIST = 3 * tileSize;
+
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
     const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
@@ -298,22 +301,35 @@ const DoomLikeGame = () => {
     return points;
   }
 
-  // Modified spawnEnemies to use fixed spawn points
+  // Modified spawnEnemies to use fixed spawn points and spread out enemies
   function spawnEnemies(count: number) {
     const spawnPoints = getValidSpawnPoints();
     const newEnemies: Enemy[] = [];
     const usedIndices = new Set<number>();
+    let attempts = 0;
     for (let i = 0; i < count && spawnPoints.length > 0; i++) {
       let idx;
-      do {
+      let valid = false;
+      let tryCount = 0;
+      while (!valid && tryCount < 100) {
         idx = Math.floor(Math.random() * spawnPoints.length);
-      } while (usedIndices.has(idx) && usedIndices.size < spawnPoints.length);
-      usedIndices.add(idx);
-      const { x, y } = spawnPoints[idx];
+        const { x, y } = spawnPoints[idx];
+        valid = true;
+        for (const enemy of newEnemies) {
+          const dist = Math.hypot(enemy.x - x, enemy.y - y);
+          if (dist < MIN_SPAWN_DIST) {
+            valid = false;
+            break;
+          }
+        }
+        tryCount++;
+      }
+      usedIndices.add(idx!);
+      const { x, y } = spawnPoints[idx!];
       newEnemies.push({
         x,
         y,
-        speed: 0.5 + Math.random() * 0.5,
+        speed: 0.1 + Math.random() * 0.1, // Slower speed
         alive: true,
       });
     }
