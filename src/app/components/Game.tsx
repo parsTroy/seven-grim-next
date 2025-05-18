@@ -282,10 +282,10 @@ const DoomLikeGame = () => {
           if (!proj) return;
           // Check if enemy is in the center of the screen (crosshair)
           const crosshairX = width / 2;
-          // Use a larger hitbox (60% wider than sprite)
+          // Use a more generous hitbox (2x sprite width)
           if (
-            proj.screenX > crosshairX - proj.size * 0.6 &&
-            proj.screenX < crosshairX + proj.size * 0.6
+            proj.screenX > crosshairX - proj.size &&
+            proj.screenX < crosshairX + proj.size
           ) {
             // Check occlusion (already filtered by visibleEnemies, but double check)
             if (isEnemyVisible(enemy)) {
