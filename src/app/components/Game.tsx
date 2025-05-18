@@ -308,6 +308,7 @@ const DoomLikeGame = () => {
               deathSoundRef.current.play();
             }
           }
+          setEnemies([...enemiesRef.current]);
         }
         // --- End shooting logic ---
         setTimeout(() => {
