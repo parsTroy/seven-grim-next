@@ -341,7 +341,7 @@ const DoomLikeGame = () => {
     // Play/pause music on game start/end
     useEffect(() => {
       if (!musicRef.current) {
-        musicRef.current = new window.Audio('/music.ogg');
+        musicRef.current = new window.Audio('/music.mp3');
         musicRef.current.loop = true;
         musicRef.current.volume = 0.5;
       }
@@ -356,8 +356,8 @@ const DoomLikeGame = () => {
 
     // Preload SFX
     useEffect(() => {
-      shootSoundRef.current = new window.Audio('/shoot.wav');
-      deathSoundRef.current = new window.Audio('/death.wav');
+      shootSoundRef.current = new window.Audio('/shoot.mp3');
+      deathSoundRef.current = new window.Audio('/death.mp3');
     }, []);
 
     return () => {
