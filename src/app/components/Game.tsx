@@ -532,23 +532,26 @@ const DoomLikeGame = () => {
     if (deadCount === enemiesInRound && !isCountdown && !isRoundPopup) {
       setIsCountdown(true);
       setCountdownValue(3);
-      let val = 3;
-      const interval = setInterval(() => {
-        val--;
-        setCountdownValue(val);
-        if (val === 0) {
-          clearInterval(interval);
-          setIsCountdown(false);
-          setRound((r: number) => {
-            const nextRound = r + 1;
-            setTimeout(() => startRound(nextRound), 200);
-            return nextRound;
-          });
-        }
-      }, 1000);
-      return () => clearInterval(interval);
     }
   }, [enemies, isCountdown, isRoundPopup, playing, round, enemiesInRound]);
+
+  // Robust countdown effect
+  useEffect(() => {
+    if (!isCountdown) return;
+    if (countdownValue > 0) {
+      const timeout = setTimeout(() => {
+        setCountdownValue(v => v - 1);
+      }, 1000);
+      return () => clearTimeout(timeout);
+    } else if (countdownValue === 0) {
+      setIsCountdown(false);
+      setRound((r: number) => {
+        const nextRound = r + 1;
+        setTimeout(() => startRound(nextRound), 200);
+        return nextRound;
+      });
+    }
+  }, [isCountdown, countdownValue]);
 
   return (
     <div
