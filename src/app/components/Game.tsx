@@ -169,8 +169,8 @@ const DoomLikeGame = () => {
           style={{
             position: 'absolute',
             bottom: '0',
-            left: '0',
-            transform: 'translateX(-50%)',
+            left: '75%',
+            transform: 'translateX(-75%)',
             width: '200px',
             zIndex: 5,
             pointerEvents: 'none',
