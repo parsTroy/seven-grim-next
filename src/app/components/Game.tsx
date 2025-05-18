@@ -53,6 +53,7 @@ const DoomLikeGame = () => {
     alive: boolean;
     frame: number;
     health: number;
+    lastAttackTime?: number;
   };
 
   const [enemies, setEnemies] = useState<Enemy[]>([]);
@@ -79,6 +80,10 @@ const DoomLikeGame = () => {
   const [enemiesInRound, setEnemiesInRound] = useState(0);
   const [roundInProgress, setRoundInProgress] = useState(false);
   const currentRoundRef = useRef(1);
+
+  // Player health and game over
+  const [playerHealth, setPlayerHealth] = useState(3);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
@@ -123,6 +128,21 @@ const DoomLikeGame = () => {
         }
         if (isWalkable(enemy.x, nextY)) {
           enemy.y = nextY;
+        }
+      } else {
+        // Enemy is close enough to attack
+        const now = Date.now();
+        if (!enemy.lastAttackTime || now - enemy.lastAttackTime > 1000) {
+          enemy.lastAttackTime = now;
+          setPlayerHealth((h: number) => {
+            if (h > 1) {
+              return h - 1;
+            } else {
+              setIsGameOver(true);
+              running.current = false;
+              return 0;
+            }
+          });
         }
       }
     });
@@ -211,6 +231,11 @@ const DoomLikeGame = () => {
   };
 
   const handleClickToStart = () => {
+    if (isGameOver) {
+      resetGame();
+      document.body.style.overflow = 'hidden';
+      return;
+    }
     if (!playing) {
       setPlaying(true);
       running.current = true;
@@ -560,6 +585,34 @@ const DoomLikeGame = () => {
     }
   }, [isCountdown, countdownValue]);
 
+  // Reset game state for restart
+  function resetGame() {
+    setPlayerHealth(3);
+    setIsGameOver(false);
+    setRound(1);
+    setEnemies([]);
+    enemiesRef.current = [];
+    setEnemiesInRound(0);
+    setRoundInProgress(false);
+    setIsRoundPopup(false);
+    setIsCountdown(false);
+    setCountdownValue(3);
+    setGunFrameIndex(0);
+    setIsFiring(false);
+    isFiringRef.current = false;
+    posX.current = 100;
+    posY.current = 100;
+    dir.current = 0;
+    keys.current = {};
+    running.current = false;
+    setTimeout(() => {
+      setPlaying(true);
+      running.current = true;
+      setTimeout(() => startRound(1), 300);
+      requestAnimationFrame(loop);
+    }, 100);
+  }
+
   return (
     <div
       className="relative"
@@ -620,6 +673,24 @@ const DoomLikeGame = () => {
       {isCountdown && (
         <div className="absolute inset-0 bg-black/70 text-white flex items-center justify-center text-2xl font-bold z-20">
           Next round in {countdownValue}...
+        </div>
+      )}
+      {/* Player health UI */}
+      {playing && !isGameOver && (
+        <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded z-20 text-lg font-bold">
+          Health: {playerHealth}
+        </div>
+      )}
+      {/* Game Over overlay */}
+      {isGameOver && (
+        <div className="absolute inset-0 bg-black/80 text-white flex items-center justify-center flex-col z-30">
+          <div className="text-4xl font-bold mb-4">Game Over</div>
+          <button
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded text-2xl mt-2"
+            onClick={handleClickToStart}
+          >
+            Click to Play Again
+          </button>
         </div>
       )}
     </div>
