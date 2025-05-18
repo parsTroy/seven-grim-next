@@ -98,7 +98,7 @@ const DoomLikeGame = () => {
       const dx = posX.current - enemy.x;
       const dy = posY.current - enemy.y;
       const dist = Math.hypot(dx, dy);
-      if (dist > 1) {
+      if (dist > 40) { // Stop if within 40px
         // Try to move toward player, but check for wall collision
         const stepX = (dx / dist) * enemy.speed;
         const stepY = (dy / dist) * enemy.speed;
@@ -174,9 +174,9 @@ const DoomLikeGame = () => {
       if (transformY > 0) {
         // Projected X position on screen
         const enemyScreenX = Math.floor((width / 2) * (1 + transformX / transformY));
-        // Scale size by distance, clamp to minimum
+        // Scale size by distance, clamp to min and max
         const rawSize = Math.abs(Math.floor(height / transformY));
-        const enemySize = Math.max(rawSize, 20);
+        const enemySize = Math.max(Math.min(rawSize, 120), 20);
         // Animation frame based on global tick
         const frame = Math.floor((enemyAnimTick / 1) % 3);
         const sprite = enemySprites[frame].current;
@@ -184,7 +184,7 @@ const DoomLikeGame = () => {
           ctx.drawImage(
             sprite,
             enemyScreenX - enemySize / 2,
-            height / 2 - enemySize / 2,
+            height - enemySize, // feet at floor
             enemySize,
             enemySize
           );
