@@ -60,8 +60,8 @@ const Game = () => {
 
         let distance = 0;
         while (distance < 300) {
-          const testX = Math.floor((posX + rayX * distance) / tileSize);
-          const testY = Math.floor((posY + rayY * distance) / tileSize);
+          const testX = Math.floor((posX.current + rayX * distance) / tileSize);
+          const testY = Math.floor((posY.current + rayY * distance) / tileSize);
 
           if (
             testX < 0 ||
