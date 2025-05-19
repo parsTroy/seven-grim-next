@@ -161,35 +161,34 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // World-aligned, tile-based floor (Wolfenstein style, no perspective)
+    // Optimized Doom-style floor casting (blocky for performance)
     if (floorTexture.current) {
-      const texW = floorTexture.current.width;
-      const texH = floorTexture.current.height;
-      // Calculate the top-left world coordinate visible on the screen
-      const playerTileX = posX.current / tileSize;
-      const playerTileY = posY.current / tileSize;
-      // How many tiles fit horizontally and vertically in the view
-      const tilesX = Math.ceil(width / texW) + 2;
-      const tilesY = Math.ceil((height / 2) / texH) + 2;
-      // Offset in pixels for smooth scrolling
-      const offsetX = Math.floor(-((posX.current % tileSize) / tileSize) * texW);
-      const offsetY = Math.floor(-((posY.current % tileSize) / tileSize) * texH);
-      for (let ty = 0; ty < tilesY; ty++) {
-        for (let tx = 0; tx < tilesX; tx++) {
-          // World tile coordinates
-          const worldTileX = Math.floor(playerTileX) + tx - Math.floor(tilesX / 2);
-          const worldTileY = Math.floor(playerTileY) + ty + Math.floor(mapHeight / 2) - tilesY + 1;
-          // Only draw if this is a floor tile
-          if (
-            worldTileY >= 0 && worldTileY < mapHeight &&
-            worldTileX >= 0 && worldTileX < mapWidth &&
-            map[worldTileY][worldTileX] === 0
-          ) {
-            // Screen position
-            const screenX = (tx * texW) + offsetX;
-            const screenY = (ty * texH) + Math.floor(height / 2) + offsetY;
-            ctx.drawImage(floorTexture.current, screenX, screenY, texW, texH);
-          }
+      const blockSize = 2; // Draw every 2 pixels for performance
+      for (let y = Math.floor(height / 2); y < height; y += blockSize) {
+        // Distance from player to floor for this row
+        const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
+        const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
+        const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
+        const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
+        const p = y - height / 2;
+        const posZ = 0.5 * height;
+        const rowDistance = posZ / p;
+        // Precompute floor step for this row
+        const stepX = rowDistance * (rayDirX1 - rayDirX0) / width;
+        const stepY = rowDistance * (rayDirY1 - rayDirY0) / width;
+        // Start world position for the leftmost pixel
+        let floorX = posX.current / tileSize + rowDistance * rayDirX0;
+        let floorY = posY.current / tileSize + rowDistance * rayDirY0;
+        for (let x = 0; x < width; x += blockSize) {
+          const tx = Math.floor((floorX % 1) * floorTexture.current.width);
+          const ty = Math.floor((floorY % 1) * floorTexture.current.height);
+          ctx.drawImage(
+            floorTexture.current,
+            tx, ty, 1, 1,
+            x, y, blockSize, blockSize
+          );
+          floorX += stepX * blockSize;
+          floorY += stepY * blockSize;
         }
       }
     } else {
