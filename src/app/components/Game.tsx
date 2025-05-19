@@ -161,7 +161,7 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // Draw a fixed, tiled floor texture (no perspective)
+    // Draw a truly fixed, tiled floor texture (screen-space, not world-space)
     if (floorTexture.current) {
       const texW = floorTexture.current.width;
       const texH = floorTexture.current.height;
