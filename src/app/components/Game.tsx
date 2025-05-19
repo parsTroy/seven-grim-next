@@ -174,13 +174,14 @@ const DoomLikeGame = () => {
     // Doom-style floor casting, blocky for performance, always underfoot
     if (floorTexture.current) {
       const blockSize = 8; // Increase for more performance, decrease for more detail
-      for (let y = Math.floor(height / 4); y < height + blockSize * 2; y += blockSize) {
+      // Only draw floor below the horizon
+      for (let y = Math.ceil(height / 2); y < height; y += blockSize) {
         // Perspective math
         const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
         const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
         const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
         const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
-        const p = y - height / 2;
+        const p = y - height / 2; // always positive
         const posZ = 0.5 * height;
         const rowDistance = posZ / p;
         const stepX = rowDistance * (rayDirX1 - rayDirX0) / width;
