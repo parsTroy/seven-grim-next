@@ -171,7 +171,7 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // World-aligned, grid-based floor (true tilemap, not perspective)
+    // World-aligned, grid-based floor (true tilemap, not perspective, not rotated)
     if (floorTexture.current) {
       const texW = floorTexture.current.width;
       const texH = floorTexture.current.height;
@@ -181,17 +181,9 @@ const DoomLikeGame = () => {
             // World position of tile
             const worldX = mapX * tileSize;
             const worldY = mapY * tileSize;
-            // Vector from player to tile center
-            const dx = worldX - posX.current;
-            const dy = worldY - posY.current;
-            // Rotate by -dir.current
-            const cosA = Math.cos(-dir.current);
-            const sinA = Math.sin(-dir.current);
-            const rotX = dx * cosA - dy * sinA;
-            const rotY = dx * sinA + dy * cosA;
-            // Project to screen (centered)
-            const screenX = Math.round(rotX + width / 2);
-            const screenY = Math.round(rotY + height / 2);
+            // Project to screen (centered on player, no rotation)
+            const screenX = Math.round(worldX - posX.current + width / 2);
+            const screenY = Math.round(worldY - posY.current + height / 2);
             // Only draw if visible on screen (bottom half)
             if (
               screenX + texW > 0 && screenX < width &&
