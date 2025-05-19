@@ -171,27 +171,32 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // World-aligned, grid-based floor (true tilemap, not perspective, not rotated)
+    // Doom-style floor casting, blocky for performance, always underfoot
     if (floorTexture.current) {
-      const texW = floorTexture.current.width;
-      const texH = floorTexture.current.height;
-      for (let mapY = 0; mapY < map.length; mapY++) {
-        for (let mapX = 0; mapX < map[0].length; mapX++) {
-          if (map[mapY][mapX] === 0) {
-            // World position of tile
-            const worldX = mapX * tileSize;
-            const worldY = mapY * tileSize;
-            // Project to screen (centered on player, no rotation)
-            const screenX = Math.round(worldX - posX.current + width / 2);
-            const screenY = Math.round(worldY - posY.current + height / 2);
-            // Only draw if visible on screen (bottom half)
-            if (
-              screenX + texW > 0 && screenX < width &&
-              screenY + texH > height / 2 && screenY < height
-            ) {
-              ctx.drawImage(floorTexture.current, screenX, screenY, texW, texH);
-            }
-          }
+      const blockSize = 8; // Increase for more performance, decrease for more detail
+      for (let y = Math.floor(height / 2); y < height; y += blockSize) {
+        // Perspective math
+        const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
+        const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
+        const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
+        const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
+        const p = y - height / 2;
+        const posZ = 0.5 * height;
+        const rowDistance = posZ / p;
+        const stepX = rowDistance * (rayDirX1 - rayDirX0) / width;
+        const stepY = rowDistance * (rayDirY1 - rayDirY0) / width;
+        let floorX = posX.current / tileSize + rowDistance * rayDirX0;
+        let floorY = posY.current / tileSize + rowDistance * rayDirY0;
+        for (let x = 0; x < width; x += blockSize) {
+          const tx = Math.floor((floorX % 1) * floorTexture.current.width);
+          const ty = Math.floor((floorY % 1) * floorTexture.current.height);
+          ctx.drawImage(
+            floorTexture.current,
+            tx, ty, 1, 1,
+            x, y, blockSize, blockSize
+          );
+          floorX += stepX * blockSize;
+          floorY += stepY * blockSize;
         }
       }
     } else {
