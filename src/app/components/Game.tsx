@@ -186,6 +186,7 @@ const DoomLikeGame = () => {
       let wallX = 0;
       let mapX = 0;
       let mapY = 0;
+      let hitVertical = false;
       while (distance < 300) {
         const testX = Math.floor((posX.current + rayX * distance) / tileSize);
         const testY = Math.floor((posY.current + rayY * distance) / tileSize);
@@ -198,6 +199,12 @@ const DoomLikeGame = () => {
           testY >= mapHeight ||
           map[testY][testX] > 0
         ) {
+          // Determine if hit was vertical or horizontal
+          const prevX = posX.current + rayX * (distance - 1);
+          const prevY = posY.current + rayY * (distance - 1);
+          const prevTileX = Math.floor(prevX / tileSize);
+          const prevTileY = Math.floor(prevY / tileSize);
+          hitVertical = (prevTileX !== testX);
           hit = true;
           break;
         }
@@ -207,17 +214,17 @@ const DoomLikeGame = () => {
       const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
       const drawStart = Math.floor((height - wallHeight) / 2);
       if (hit && wallTexture.current) {
-        // Calculate where the wall was hit (for texture X coordinate)
-        let hitX = (posX.current + rayX * distance) / tileSize - mapX;
-        let hitY = (posY.current + rayY * distance) / tileSize - mapY;
-        let texX = 0;
-        if (Math.abs(hitX) > Math.abs(hitY)) {
-          texX = hitX;
+        // Use correct coordinate for texture sampling
+        let wallHitCoord;
+        if (hitVertical) {
+          // Hit a vertical wall, use Y coordinate
+          wallHitCoord = (posY.current + rayY * distance) / tileSize;
         } else {
-          texX = hitY;
+          // Hit a horizontal wall, use X coordinate
+          wallHitCoord = (posX.current + rayX * distance) / tileSize;
         }
-        texX = Math.abs(texX);
-        const textureX = Math.floor(texX * wallTexture.current.width) % wallTexture.current.width;
+        wallHitCoord = wallHitCoord - Math.floor(wallHitCoord);
+        const textureX = Math.floor(wallHitCoord * wallTexture.current.width) % wallTexture.current.width;
         ctx.drawImage(
           wallTexture.current,
           textureX, 0, 1, wallTexture.current.height,
