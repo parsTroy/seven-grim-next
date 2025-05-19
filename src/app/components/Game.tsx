@@ -161,13 +161,33 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // Draw a truly fixed, tiled floor texture (screen-space, not world-space)
+    // Doom-style floor casting (world-projected, not screen-tiled)
     if (floorTexture.current) {
-      const texW = floorTexture.current.width;
-      const texH = floorTexture.current.height;
-      for (let y = Math.floor(height / 2); y < height; y += texH) {
-        for (let x = 0; x < width; x += texW) {
-          ctx.drawImage(floorTexture.current, x, y, texW, texH);
+      for (let y = Math.floor(height / 2); y < height; y++) {
+        // Distance from player to floor for this row
+        const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
+        const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
+        const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
+        const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
+        const p = y - height / 2;
+        const posZ = 0.5 * height;
+        const rowDistance = posZ / p;
+        // Precompute floor step for this row
+        const stepX = rowDistance * (rayDirX1 - rayDirX0) / width;
+        const stepY = rowDistance * (rayDirY1 - rayDirY0) / width;
+        // Start world position for the leftmost pixel
+        let floorX = posX.current / tileSize + rowDistance * rayDirX0;
+        let floorY = posY.current / tileSize + rowDistance * rayDirY0;
+        for (let x = 0; x < width; x++) {
+          const tx = Math.floor((floorX % 1) * floorTexture.current.width);
+          const ty = Math.floor((floorY % 1) * floorTexture.current.height);
+          ctx.drawImage(
+            floorTexture.current,
+            tx, ty, 1, 1,
+            x, y, 1, 1
+          );
+          floorX += stepX;
+          floorY += stepY;
         }
       }
     } else {
@@ -212,7 +232,9 @@ const DoomLikeGame = () => {
       }
 
       const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
-      const drawStart = Math.floor((height - wallHeight) / 2);
+      // Clamp wall height to reduce stretching up close
+      const clampedWallHeight = Math.min(wallHeight, height * 2);
+      const drawStart = Math.floor((height - clampedWallHeight) / 2);
       if (hit && wallTexture.current) {
         // Use correct coordinate for texture sampling
         let wallHitCoord;
@@ -228,12 +250,12 @@ const DoomLikeGame = () => {
         ctx.drawImage(
           wallTexture.current,
           textureX, 0, 1, wallTexture.current.height,
-          x, drawStart, 1, wallHeight
+          x, drawStart, 1, clampedWallHeight
         );
       } else {
         // fallback: solid color
         ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
-        ctx.fillRect(x, drawStart, 1, wallHeight);
+        ctx.fillRect(x, drawStart, 1, clampedWallHeight);
       }
     }
   
