@@ -161,39 +161,16 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
-    // Floor casting (classic raycasting, optimized)
+    // Draw a fixed, tiled floor texture (no perspective)
     if (floorTexture.current) {
-      // Draw floor in vertical strips for performance
-      const stripSize = 2; // Draw every 2 pixels vertically
-      for (let y = Math.floor(height / 2); y < height; y += stripSize) {
-        // Calculate world distance for this row
-        const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
-        const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
-        const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
-        const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
-        const p = y - height / 2;
-        const posZ = 0.5 * height;
-        const rowDistance = posZ / p;
-        // Precompute floor step for this row
-        const stepX = rowDistance * (rayDirX1 - rayDirX0) / width;
-        const stepY = rowDistance * (rayDirY1 - rayDirY0) / width;
-        // Start world position for the leftmost pixel
-        let floorX = posX.current / tileSize + rowDistance * rayDirX0;
-        let floorY = posY.current / tileSize + rowDistance * rayDirY0;
-        for (let x = 0; x < width; x++) {
-          const tx = Math.floor((floorX % 1) * floorTexture.current.width);
-          const ty = Math.floor((floorY % 1) * floorTexture.current.height);
-          ctx.drawImage(
-            floorTexture.current,
-            tx, ty, 1, 1,
-            x, y, 1, stripSize
-          );
-          floorX += stepX;
-          floorY += stepY;
+      const texW = floorTexture.current.width;
+      const texH = floorTexture.current.height;
+      for (let y = Math.floor(height / 2); y < height; y += texH) {
+        for (let x = 0; x < width; x += texW) {
+          ctx.drawImage(floorTexture.current, x, y, texW, texH);
         }
       }
     } else {
-      // fallback: solid color
       ctx.fillStyle = '#222';
       ctx.fillRect(0, height / 2, width, height / 2);
     }
