@@ -174,7 +174,7 @@ const DoomLikeGame = () => {
     // Doom-style floor casting, blocky for performance, always underfoot
     if (floorTexture.current) {
       const blockSize = 8; // Increase for more performance, decrease for more detail
-      for (let y = Math.floor(height / 2); y < height; y += blockSize) {
+      for (let y = Math.floor(height / 4); y < height + blockSize * 2; y += blockSize) {
         // Perspective math
         const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
         const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
