@@ -358,8 +358,10 @@ const DoomLikeGame = () => {
       keys.current[e.key] = false;
     };
 
-    window.addEventListener('keydown', keyDownHandler);
-    window.addEventListener('keyup', keyUpHandler);
+    if (!isGameOver) {
+      window.addEventListener('keydown', keyDownHandler);
+      window.addEventListener('keyup', keyUpHandler);
+    }
 
     // Preload enemy sprite images
     const files = ['/enemy_1.png', '/enemy_2.png', '/enemy_3.png'];
