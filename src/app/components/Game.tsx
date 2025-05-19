@@ -85,6 +85,10 @@ const DoomLikeGame = () => {
   const [playerHealth, setPlayerHealth] = useState(3);
   const [isGameOver, setIsGameOver] = useState(false);
 
+  // Wall and floor textures
+  const wallTexture = useRef<HTMLImageElement | null>(null);
+  const floorTexture = useRef<HTMLImageElement | null>(null);
+
   const update = () => {
     const moveStep = speed * (keys.current['ArrowUp'] ? 1 : keys.current['ArrowDown'] ? -1 : 0);
     const rotStep = (keys.current['ArrowRight'] ? 1 : 0) - (keys.current['ArrowLeft'] ? 1 : 0);
@@ -157,16 +161,53 @@ const DoomLikeGame = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
   
+    // Floor casting (simple): fill bottom half of screen with floor texture
+    if (floorTexture.current) {
+      for (let y = Math.floor(height / 2); y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          // Simple perspective: project screen (x, y) to world
+          // This is a basic approximation for a flat floor
+          const rayDirX0 = Math.cos(dir.current) - Math.sin(dir.current);
+          const rayDirY0 = Math.sin(dir.current) + Math.cos(dir.current);
+          const rayDirX1 = Math.cos(dir.current) + Math.sin(dir.current);
+          const rayDirY1 = Math.sin(dir.current) - Math.cos(dir.current);
+          const p = y - height / 2;
+          const posZ = 0.5 * height;
+          const rowDistance = posZ / p;
+          const floorX = posX.current / tileSize + rowDistance * (rayDirX0 + (rayDirX1 - rayDirX0) * (x / width));
+          const floorY = posY.current / tileSize + rowDistance * (rayDirY0 + (rayDirY1 - rayDirY0) * (x / width));
+          const tx = Math.floor((floorX % 1) * floorTexture.current.width);
+          const ty = Math.floor((floorY % 1) * floorTexture.current.height);
+          // Sample pixel from floor texture
+          ctx.drawImage(
+            floorTexture.current,
+            tx, ty, 1, 1,
+            x, y, 1, 1
+          );
+        }
+      }
+    } else {
+      // fallback: solid color
+      ctx.fillStyle = '#222';
+      ctx.fillRect(0, height / 2, width, height / 2);
+    }
+  
+    // Wall rendering with texture
     for (let x = 0; x < width; x++) {
       const rayAngle = dir.current - 0.5 + (x / width);
       const rayX = Math.cos(rayAngle);
       const rayY = Math.sin(rayAngle);
-  
+
       let distance = 0;
+      let hit = false;
+      let wallX = 0;
+      let mapX = 0;
+      let mapY = 0;
       while (distance < 300) {
         const testX = Math.floor((posX.current + rayX * distance) / tileSize);
         const testY = Math.floor((posY.current + rayY * distance) / tileSize);
-  
+        mapX = testX;
+        mapY = testY;
         if (
           testX < 0 ||
           testX >= mapWidth ||
@@ -174,15 +215,36 @@ const DoomLikeGame = () => {
           testY >= mapHeight ||
           map[testY][testX] > 0
         ) {
+          hit = true;
           break;
         }
-  
         distance += 1;
       }
-  
+
       const wallHeight = Math.min(height, (tileSize * 400) / (distance || 1));
-      ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
-      ctx.fillRect(x, (height - wallHeight) / 2, 1, wallHeight);
+      const drawStart = Math.floor((height - wallHeight) / 2);
+      if (hit && wallTexture.current) {
+        // Calculate where the wall was hit (for texture X coordinate)
+        let hitX = (posX.current + rayX * distance) / tileSize - mapX;
+        let hitY = (posY.current + rayY * distance) / tileSize - mapY;
+        let texX = 0;
+        if (Math.abs(hitX) > Math.abs(hitY)) {
+          texX = hitX;
+        } else {
+          texX = hitY;
+        }
+        texX = Math.abs(texX);
+        const textureX = Math.floor(texX * wallTexture.current.width) % wallTexture.current.width;
+        ctx.drawImage(
+          wallTexture.current,
+          textureX, 0, 1, wallTexture.current.height,
+          x, drawStart, 1, wallHeight
+        );
+      } else {
+        // fallback: solid color
+        ctx.fillStyle = `rgb(${255 - distance}, ${255 - distance}, ${255 - distance})`;
+        ctx.fillRect(x, drawStart, 1, wallHeight);
+      }
     }
   
     // Sort enemies by distance (far to near)
@@ -247,6 +309,18 @@ const DoomLikeGame = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Preload wall and floor textures
+    const wallImg = new window.Image();
+    wallImg.src = '/T_Cave.png';
+    wallImg.onload = () => {
+      wallTexture.current = wallImg;
+    };
+    const floorImg = new window.Image();
+    floorImg.src = '/T_Dirt.png';
+    floorImg.onload = () => {
+      floorTexture.current = floorImg;
+    };
 
     const idleImg = new Image();
     const fireImg = new Image();
