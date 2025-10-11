@@ -5,10 +5,10 @@ export function absoluteUrl(path: String) {
   return `http://www.7grim.com/${path}`;
 }
 export function constructMetaData({
-  title = "7Grim | Home",
-  description = "Your New Financial Hub!",
-  image = "/android-chrome-512x512.png",
-  icons = "/android-chrome-512x512.png",
+  title = "7Grim Studio | Professional Game Development",
+  description = "7Grim Studio is a professional game development company creating innovative gaming experiences. Currently developing Cards of Fate, a strategic card game roguelike.",
+  image = "/logo.png",
+  icons = "/logo.png",
   noIndex = false,
 }: {
   title?: string;
@@ -38,7 +38,7 @@ export function constructMetaData({
       title,
       description,
       images: [image],
-      creator: "@parstroy",
+      creator: "@7grimstudio",
     },
     icons,
     metadataBase: new URL("https://7grim.com"),
