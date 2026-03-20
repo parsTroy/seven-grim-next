@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Logo from './Logo';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,15 +28,12 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-3">
-            <span className={`font-display text-gradient transition-all duration-300 ${
-              isScrolled ? 'text-xl' : 'text-2xl'
-            }`}>
-              7GRIM
-            </span>
-            <span className="hidden sm:block text-neutral-600 font-caption text-xs tracking-widest uppercase">
-              Studio
-            </span>
+          <Link href="/" className="group flex items-center">
+            <Logo
+              variant="full"
+              height={isScrolled ? 28 : 34}
+              className="transition-all duration-300 opacity-90 group-hover:opacity-100"
+            />
           </Link>
 
           {/* Desktop Nav */}

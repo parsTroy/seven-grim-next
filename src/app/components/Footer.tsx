@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Logo from './Logo';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -16,7 +16,7 @@ const Footer = () => {
 
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Image src="/7Grim-logo-nobg.png" alt="7Grim Studio" width={130} height={65} className="mb-5 opacity-85"/>
+            <Logo height={46} className="mb-5 opacity-85" />
             <p className="text-neutral-500 text-sm leading-relaxed max-w-sm mb-6">
               Independent game studio building worlds from darkness. Three titles in active development.
             </p>
