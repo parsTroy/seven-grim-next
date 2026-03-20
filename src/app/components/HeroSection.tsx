@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Logo from './Logo';
 
 const HeroSection = () => {
   return (
@@ -23,16 +23,9 @@ const HeroSection = () => {
           Independent Game Studio
         </p>
 
-        {/* Logo image */}
+        {/* Logo */}
         <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <Image
-            src="/7Grim-logo-nobg.png"
-            alt="7Grim Studio"
-            width={220}
-            height={110}
-            className="opacity-90"
-            priority
-          />
+          <Logo height={88} className="opacity-90" />
         </div>
 
         {/* Studio name */}
