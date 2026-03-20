@@ -10,14 +10,7 @@ const orbitron = Orbitron({
   weight: ["400", "500", "600", "700", "800", "900"]
 });
 
-export const metadata = {
-  ...constructMetaData(),
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-  },
-};
+export const metadata = constructMetaData();
 
 export const viewport: Viewport = {
   width: "device-width",
