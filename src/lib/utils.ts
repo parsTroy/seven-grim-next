@@ -6,7 +6,7 @@ export function absoluteUrl(path: String) {
 }
 export function constructMetaData({
   title = "7Grim Studio | Professional Game Development",
-  description = "7Grim Studio is a professional game development company creating innovative gaming experiences. Currently developing Cards of Fate, a strategic card game roguelike.",
+  description = "7Grim Studio is an independent game development company building GRIMTIDE, IRONHAVEN, and GRIMBLIND — three original titles across survival, MMORPG, and roguelike genres.",
   image = "/logo.png",
   icons = "/logo.png",
   noIndex = false,
@@ -42,7 +42,6 @@ export function constructMetaData({
     },
     icons,
     metadataBase: new URL("https://7grim.com"),
-    viewport: "width=device-width, initial-scale=1",
     ...(noIndex && {
       robots: {
         index: false,

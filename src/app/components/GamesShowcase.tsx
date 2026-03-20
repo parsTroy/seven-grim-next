@@ -1,103 +1,143 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+const games = [
+  {
+    slug:        'grimtide',
+    title:       'GRIMTIDE',
+    tagline:     'The dead rise in waves. Will you hold the line?',
+    genre:       'Co-op Survival',
+    engine:      'Godot 4',
+    players:     '1–4 Co-op',
+    platforms:   'PC · Mac · Linux · Web',
+    status:      'In Development',
+    description: 'Wave-based cooperative zombie survival inspired by the classic Call of Duty Zombies mode. Hold your ground, spend your points, and fight back the relentless tide of undead.',
+    features:    ['Wave-based progression', 'Points economy & wall buys', 'Perk system', 'Multiplayer co-op'],
+    art:         '/game-grimtide.svg',
+    accentColor: '#8b0000',
+    glowColor:   'rgba(139,0,0,0.15)',
+  },
+  {
+    slug:        'ironhaven',
+    title:       'IRONHAVEN',
+    tagline:     'A world worth coming back to.',
+    genre:       'MMORPG',
+    engine:      'Java 21 + LibGDX',
+    players:     'Massively Multiplayer',
+    platforms:   'PC',
+    status:      'In Development',
+    description: 'An Old School RuneScape-inspired MMORPG built from the ground up. Isometric 2D world, tick-based combat, deep skill systems, and a persistent living world to explore with others.',
+    features:    ['Tick-based game loop', 'Isometric 2D world', 'Quests & NPCs', 'Crafting & skills'],
+    art:         '/game-ironhaven.svg',
+    accentColor: '#c8a230',
+    glowColor:   'rgba(200,162,48,0.12)',
+  },
+  {
+    slug:        'grimblind',
+    title:       'GRIMBLIND',
+    tagline:     'Face the blind. Defy the odds. Bet it all.',
+    genre:       'Roguelike Poker',
+    engine:      'LÖVE2D (Lua)',
+    players:     'Single Player',
+    platforms:   'PC · Mac · Linux',
+    status:      'In Development',
+    description: 'A Balatro-inspired roguelike built on Texas Hold\'em. Play hands against the Blind, chain Jokers, level up hand types with Planet cards, and survive increasingly brutal Boss Blinds.',
+    features:    ['Texas Hold\'em scoring', 'Joker modifier system', 'Planet card upgrades', 'Boss Blind mechanics'],
+    art:         '/game-grimblind.svg',
+    accentColor: '#6600cc',
+    glowColor:   'rgba(102,0,204,0.15)',
+  },
+];
+
 const GamesShowcase = () => {
-  const [activeGame, setActiveGame] = useState(0);
-
-  const games = [
-    {
-      id: 1,
-      title: "CARDS OF FATE",
-      genre: "Card Game Roguelike",
-      status: "In Development",
-      description: "A strategic card game that combines deck-building mechanics with roguelike progression. Players will discover unique cards, build powerful combinations, and face increasingly challenging encounters in this innovative take on the card game genre.",
-      features: ["Deck Building Mechanics", "Roguelike Progression", "Strategic Gameplay", "Unique Card Combinations"],
-      image: "/image1.png",
-      releaseDate: "TBA 2026"
-    }
-  ];
-
   return (
-    <section id="games" className="py-20 bg-gradient-to-b from-gray-900 to-black">
+    <section id="games" className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-gaming text-4xl md:text-5xl lg:text-6xl text-gradient mb-6">
-            UPCOMING RELEASE
-          </h2>
-          <p className="font-gaming-light text-xl text-gray-400 max-w-3xl mx-auto">
-            We&apos;re currently developing our debut title. Stay tuned for updates 
-            on our innovative card game experience.
-          </p>
+
+        {/* Section header */}
+        <div className="mb-16">
+          <p className="section-label mb-4">Our Titles</p>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <h2 className="font-display text-4xl md:text-5xl text-white">
+              GAMES IN<br />DEVELOPMENT
+            </h2>
+            <p className="text-neutral-500 text-sm max-w-xs leading-relaxed">
+              Three original titles, each built from scratch by a small driven team.
+            </p>
+          </div>
+          <hr className="divider mt-8"/>
         </div>
 
-        {/* Game Display */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Game Image */}
-          <div className="relative">
-            <div className="card-gaming p-0 overflow-hidden">
-              <div className="relative h-96 bg-gradient-to-br from-gray-800 to-gray-900">
+        {/* Games grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {games.map((game) => (
+            <Link key={game.slug} href={`/games/${game.slug}`} className="game-card group block">
+              {/* Art */}
+              <div className="game-card-art">
                 <Image
-                  src={games[0].image}
-                  alt={games[0].title}
+                  src={game.art}
+                  alt={`${game.title} concept art`}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  unoptimized
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-gaming uppercase">
-                    {games[0].status}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 right-4">
-                  <span className="bg-black/50 text-white px-3 py-1 rounded-full text-sm font-gaming-light">
-                    {games[0].releaseDate}
-                  </span>
-                </div>
+                {/* Tinted overlay on hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: `radial-gradient(ellipse at center, ${game.glowColor}, transparent 70%)` }}
+                />
+                {/* Gradient fade to card info */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90" />
               </div>
-            </div>
-          </div>
 
-          {/* Game Info */}
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-gaming text-3xl md:text-4xl text-gradient mb-2">
-                {games[0].title}
-              </h3>
-              <p className="font-gaming-light text-xl text-gray-400 mb-4">
-                {games[0].genre}
-              </p>
-              <p className="text-gray-300 leading-relaxed">
-                {games[0].description}
-              </p>
-            </div>
+              {/* Info */}
+              <div className="game-card-info">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="game-card-badge badge-status">{game.status}</span>
+                  <span className="game-card-badge badge-genre">{game.genre}</span>
+                </div>
 
-            {/* Features */}
-            <div>
-              <h4 className="font-gaming text-lg text-gradient mb-4">KEY FEATURES</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {games[0].features.map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-                    <span className="text-gray-300 font-gaming-light">{feature}</span>
-                  </div>
-                ))}
+                <h3 className="font-gaming text-xl text-white mb-2 tracking-wide">
+                  {game.title}
+                </h3>
+                <p className="text-neutral-500 text-xs italic mb-3 leading-relaxed">
+                  {game.tagline}
+                </p>
+                <p className="text-neutral-400 text-sm leading-relaxed mb-5 line-clamp-3">
+                  {game.description}
+                </p>
+
+                {/* Meta row */}
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600 mb-5">
+                  <span>{game.engine}</span>
+                  <span className="text-neutral-700">·</span>
+                  <span>{game.players}</span>
+                  <span className="text-neutral-700">·</span>
+                  <span>{game.platforms}</span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-1.5 mb-6">
+                  {game.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-xs text-neutral-500">
+                      <span
+                        className="w-1 h-1 rounded-full flex-shrink-0"
+                        style={{ background: game.accentColor }}
+                      />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <span className="btn-game text-xs">
+                  Learn More →
+                </span>
               </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/games/cards-of-fate" className="btn-primary">
-                Learn More
-              </Link>
-              <button className="btn-secondary">
-                Follow Development
-              </button>
-            </div>
-          </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
