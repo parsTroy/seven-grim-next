@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <radialGradient id="gb-bg" cx="50%" cy="60%" r="75%">
+      <stop offset="0%"   stop-color="#18003a"/>
+      <stop offset="55%"  stop-color="#08001a"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <radialGradient id="gb-glow-center" cx="50%" cy="70%" r="50%">
+      <stop offset="0%"   stop-color="#6600cc" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gb-gold-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ffcc00" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gb-card-back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1e0848"/>
+      <stop offset="100%" stop-color="#0d0428"/>
+    </linearGradient>
+    <linearGradient id="gb-card-face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#f8f4e8"/>
+      <stop offset="100%" stop-color="#ece8d8"/>
+    </linearGradient>
+    <filter id="gb-blur-sm"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="gb-blur-md"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="gb-glow">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#gb-bg)"/>
+  <!-- Center glow -->
+  <rect width="800" height="450" fill="url(#gb-glow-center)"/>
+
+  <!-- Background Joker face (large, very faint, atmospheric) -->
+  <g opacity="0.09" transform="translate(400,180)">
+    <ellipse cx="0" cy="0"   rx="130" ry="155" fill="#aa00ff"/>
+    <ellipse cx="-38" cy="-28" rx="20"  ry="24"  fill="#050010"/>
+    <ellipse cx="38"  cy="-28" rx="20"  ry="24"  fill="#050010"/>
+    <circle  cx="-38" cy="-28" r="8"   fill="#cc00ff" opacity="0.6"/>
+    <circle  cx="38"  cy="-28" r="8"   fill="#cc00ff" opacity="0.6"/>
+    <path d="M -55 44 Q -20 78 0 58 Q 20 78 55 44" fill="none" stroke="#050010" stroke-width="7"/>
+    <path d="M -42 46 Q 0 80 42 46 L 36 58 Q 0 88 -36 58 Z" fill="#050010" opacity="0.85"/>
+    <!-- Jester hat -->
+    <rect x="-90" y="-170" width="180" height="18" fill="#aa00ff"/>
+    <polygon points="-38,-170 -10,-260 14,-170"  fill="#aa00ff"/>
+    <polygon points="14,-170  46,-250  74,-170"   fill="#aa00ff"/>
+    <circle  cx="-10" cy="-260" r="10" fill="#ffcc00"/>
+    <circle  cx="46"  cy="-250" r="10" fill="#ffcc00"/>
+    <circle  cx="-90" cy="-170" r="8"  fill="#ffcc00"/>
+    <circle  cx="90"  cy="-170" r="8"  fill="#ffcc00"/>
+  </g>
+
+  <!-- Gold particles / sparkles -->
+  <g fill="#ffcc00" opacity="0.5">
+    <circle cx="168" cy="148" r="2.5"/>
+    <circle cx="195" cy="172" r="1.8"/>
+    <circle cx="220" cy="135" r="2.0"/>
+    <circle cx="580" cy="142" r="2.5"/>
+    <circle cx="610" cy="168" r="1.8"/>
+    <circle cx="635" cy="130" r="2.0"/>
+    <circle cx="290" cy="120" r="1.5"/>
+    <circle cx="510" cy="116" r="1.5"/>
+    <circle cx="400" cy="100" r="2.0"/>
+    <circle cx="140" cy="210" r="1.5"/>
+    <circle cx="660" cy="205" r="1.5"/>
+    <!-- Star shapes -->
+    <polygon points="258,155 261,163 269,163 263,168 265,176 258,171 251,176 253,168 247,163 255,163"/>
+    <polygon points="542,150 545,158 553,158 547,163 549,171 542,166 535,171 537,163 531,158 539,158" transform="scale(0.85) translate(80,20)"/>
+  </g>
+
+  <!-- Gold coins (left cluster) -->
+  <g>
+    <circle cx="128" cy="385" r="20" fill="#9a6c05" opacity="0.85"/>
+    <circle cx="128" cy="385" r="16" fill="#c8900e" opacity="0.9"/>
+    <circle cx="128" cy="385" r="12" fill="#d4a820"/>
+    <circle cx="112" cy="400" r="17" fill="#8a5e04" opacity="0.8"/>
+    <circle cx="112" cy="400" r="13" fill="#b88010" opacity="0.88"/>
+    <circle cx="112" cy="400" r="9"  fill="#c89020"/>
+    <circle cx="155" cy="395" r="15" fill="#9a6c05" opacity="0.8"/>
+    <circle cx="155" cy="395" r="11" fill="#c8900e" opacity="0.88"/>
+    <circle cx="155" cy="395" r="7"  fill="#d4a820"/>
+  </g>
+  <!-- Gold coins (right cluster) -->
+  <g>
+    <circle cx="640" cy="380" r="19" fill="#9a6c05" opacity="0.85"/>
+    <circle cx="640" cy="380" r="15" fill="#c8900e" opacity="0.9"/>
+    <circle cx="640" cy="380" r="11" fill="#d4a820"/>
+    <circle cx="668" cy="395" r="16" fill="#8a5e04" opacity="0.8"/>
+    <circle cx="668" cy="395" r="12" fill="#b88010" opacity="0.88"/>
+    <circle cx="668" cy="395" r="8"  fill="#c89020"/>
+    <circle cx="695" cy="384" r="14" fill="#9a6c05" opacity="0.78"/>
+    <circle cx="695" cy="384" r="10" fill="#c8900e" opacity="0.85"/>
+    <circle cx="695" cy="384" r="6"  fill="#d4a820"/>
+  </g>
+
+  <!-- ── PLAYING CARDS (fanned from bottom-center) ── -->
+
+  <!-- Card 1 – far left, rotated -30° -->
+  <g transform="translate(252,330) rotate(-30)">
+    <rect x="-42" y="-68" width="84" height="118" rx="7" fill="url(#gb-card-back)" stroke="#4a1e80" stroke-width="1.5"/>
+    <rect x="-35" y="-61" width="70" height="104" rx="4" fill="none" stroke="#2e0e5a" stroke-width="1"/>
+    <path d="M -35,-61 L 35,43 M 35,-61 L -35,43" stroke="#1a0840" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="0" cy="-9" r="14" fill="none" stroke="#2e0e5a" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="0" cy="-9" r="4"  fill="#2e0e5a" opacity="0.5"/>
+  </g>
+
+  <!-- Card 2 – left-center, rotated -15° -->
+  <g transform="translate(320,300) rotate(-15)">
+    <rect x="-42" y="-68" width="84" height="118" rx="7" fill="url(#gb-card-face)" stroke="#d8d0b0" stroke-width="1"/>
+    <!-- Ace of Spades -->
+    <text x="-30" y="-51" fill="#0a0a18" font-size="18" font-family="Georgia, serif" font-weight="bold">A</text>
+    <text x="-34" y="-34" fill="#0a0a18" font-size="15" font-family="Georgia, serif">♠</text>
+    <text x="0"   y="15"  fill="#0a0a18" font-size="52" font-family="Georgia, serif" text-anchor="middle">♠</text>
+    <g transform="rotate(180, 0, 22)">
+      <text x="-30" y="-48" fill="#0a0a18" font-size="18" font-family="Georgia, serif" font-weight="bold">A</text>
+    </g>
+  </g>
+
+  <!-- Card 3 – center, straight (King of Hearts) – highlighted -->
+  <g transform="translate(400,285) rotate(0)">
+    <!-- Gold glow behind -->
+    <ellipse cx="0" cy="0" rx="65" ry="85" fill="url(#gb-gold-glow)" filter="url(#gb-blur-md)"/>
+    <rect x="-42" y="-68" width="84" height="118" rx="7" fill="url(#gb-card-face)" stroke="#d8d0b0" stroke-width="2"/>
+    <!-- K ♥ top -->
+    <text x="-30" y="-51" fill="#bb0000" font-size="18" font-family="Georgia, serif" font-weight="bold">K</text>
+    <text x="-34" y="-33" fill="#bb0000" font-size="15" font-family="Georgia, serif">♥</text>
+    <!-- Crown -->
+    <polygon points="-22,-32 -22,-12 22,-12 22,-32 12,-22 0,-38 -12,-22" fill="#cc9900" stroke="#aa7700" stroke-width="0.6"/>
+    <circle cx="-22" cy="-32" r="3.5" fill="#bb0000"/>
+    <circle cx="0"   cy="-38" r="3.5" fill="#0044bb"/>
+    <circle cx="22"  cy="-32" r="3.5" fill="#009944"/>
+    <!-- Face -->
+    <ellipse cx="0" cy="15" rx="16" ry="18" fill="#f0e0c0" opacity="0.65"/>
+    <line x1="-7"  y1="9"  x2="-3"  y2="9"  stroke="#664422" stroke-width="1.5"/>
+    <line x1="3"   y1="9"  x2="7"   y2="9"  stroke="#664422" stroke-width="1.5"/>
+    <path d="M -5 20 Q 0 25 5 20" fill="none" stroke="#664422" stroke-width="1.5"/>
+    <!-- K ♥ bottom -->
+    <g transform="rotate(180, 0, 25)">
+      <text x="-30" y="-48" fill="#bb0000" font-size="18" font-family="Georgia, serif" font-weight="bold">K</text>
+    </g>
+  </g>
+
+  <!-- Card 4 – right-center, rotated +15° (Joker) -->
+  <g transform="translate(480,300) rotate(15)">
+    <rect x="-42" y="-68" width="84" height="118" rx="7" fill="url(#gb-card-face)" stroke="#d8d0b0" stroke-width="1"/>
+    <!-- Joker label -->
+    <text x="-32" y="-51" fill="#8800cc" font-size="13" font-family="Georgia, serif" font-weight="bold">JKR</text>
+    <text x="-34" y="-35" fill="#8800cc" font-size="14" font-family="Georgia, serif">★</text>
+    <!-- Joker face -->
+    <ellipse cx="0" cy="-5" rx="20" ry="22" fill="#ffe8e0" opacity="0.55"/>
+    <!-- Jester hat -->
+    <rect x="-20" y="-34" width="40" height="6" fill="#8800cc" opacity="0.85"/>
+    <polygon points="-8,-34 0,-56 8,-34"  fill="#8800cc" opacity="0.85"/>
+    <circle cx="0"  cy="-56" r="4.5" fill="#ffcc00"/>
+    <!-- Eyes -->
+    <circle cx="-7" cy="-9"  r="4.5" fill="#330044"/>
+    <circle cx="7"  cy="-9"  r="4.5" fill="#330044"/>
+    <circle cx="-6" cy="-10" r="1.5" fill="#cc00ff" opacity="0.6"/>
+    <circle cx="8"  cy="-10" r="1.5" fill="#cc00ff" opacity="0.6"/>
+    <!-- Grin -->
+    <path d="M -12 10 Q 0 24 12 10" fill="none" stroke="#330044" stroke-width="2.5"/>
+    <path d="M -8  10 Q 0 20 8  10 L 7 14 Q 0 22 -7 14 Z" fill="#330044" opacity="0.8"/>
+    <g transform="rotate(180, 0, 25)">
+      <text x="-32" y="-48" fill="#8800cc" font-size="13" font-family="Georgia, serif" font-weight="bold">JKR</text>
+    </g>
+  </g>
+
+  <!-- Card 5 – far right, rotated +30° (card back) -->
+  <g transform="translate(548,330) rotate(30)">
+    <rect x="-42" y="-68" width="84" height="118" rx="7" fill="url(#gb-card-back)" stroke="#4a1e80" stroke-width="1.5"/>
+    <rect x="-35" y="-61" width="70" height="104" rx="4" fill="none" stroke="#2e0e5a" stroke-width="1"/>
+    <path d="M 0,-61 L 35,43 L -35,43 Z" fill="none" stroke="#1a0840" stroke-width="0.5" opacity="0.4"/>
+    <path d="M 0,43 L 35,-61 L -35,-61 Z" fill="none" stroke="#1a0840" stroke-width="0.5" opacity="0.4"/>
+    <circle cx="0" cy="-9" r="14" fill="none" stroke="#2e0e5a" stroke-width="0.8" opacity="0.6"/>
+  </g>
+
+  <!-- Table surface glow -->
+  <ellipse cx="400" cy="410" rx="380" ry="70" fill="#220055" opacity="0.2" filter="url(#gb-blur-md)"/>
+
+  <!-- Bottom vignette -->
+  <rect x="0" y="415" width="800" height="35" fill="#000000" opacity="0.7"/>
+  <!-- Top vignette -->
+  <rect x="0" y="0"   width="800" height="45" fill="#000000" opacity="0.5"/>
+</svg>

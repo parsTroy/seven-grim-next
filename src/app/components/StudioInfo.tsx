@@ -3,114 +3,123 @@
 import React from 'react';
 import Image from 'next/image';
 
-const StudioInfo = () => {
-  const stats = [
-    { label: "Game in Development", value: "1", suffix: "" },
-    { label: "Years Experience", value: "2", suffix: "+" },
-    { label: "Team Members", value: "5", suffix: "+" },
-    { label: "Technologies", value: "8", suffix: "+" }
-  ];
+const stats = [
+  { label: 'Games in Development', value: '3' },
+  { label: 'Years Active',          value: '4' },
+  { label: 'Team Members',          value: '5+' },
+  { label: 'Game Engines',          value: '3' },
+];
 
+const values = [
+  {
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+      </svg>
+    ),
+    title: 'INNOVATION',
+    body: 'We build from scratch. Every system, every mechanic — designed intentionally, not assembled from defaults.',
+  },
+  {
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+      </svg>
+    ),
+    title: 'CRAFT',
+    body: 'Games are craft, not product. We sweat the details that players feel but can\'t name — the ones that make something memorable.',
+  },
+  {
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    ),
+    title: 'COMMUNITY',
+    body: 'Small team, big ambition. We build openly, share progress, and shape our games alongside the players who will play them.',
+  },
+];
+
+const StudioInfo = () => {
   return (
-    <section id="studio" className="py-20 bg-black">
+    <section id="studio" className="py-24 bg-gradient-to-b from-black to-[#080808]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="font-gaming text-4xl md:text-5xl lg:text-6xl text-gradient mb-6">
-            ABOUT 7GRIM STUDIO
-          </h2>
-          <p className="font-gaming-light text-xl text-gray-400 max-w-4xl mx-auto">
-            Founded in 2022, 7Grim Studio is a game development company dedicated to creating 
-            innovative gaming experiences. We combine cutting-edge technology with compelling 
-            storytelling to deliver memorable games.
-          </p>
+
+        {/* Header */}
+        <div className="mb-16">
+          <p className="section-label mb-4">The Studio</p>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <h2 className="font-display text-4xl md:text-5xl text-white">
+              ABOUT<br />7GRIM STUDIO
+            </h2>
+            <p className="text-neutral-400 text-base max-w-lg leading-relaxed">
+              Founded to build games we actually wanted to play. Based in the indie underground — no publisher pressure, no feature creep. Just three worlds taking shape.
+            </p>
+          </div>
+          <hr className="divider mt-8"/>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="card-gaming">
-                <div className="font-gaming text-4xl md:text-5xl text-gradient mb-2">
-                  {stat.value}{stat.suffix}
-                </div>
-                <div className="font-gaming-light text-gray-400 uppercase text-sm">
-                  {stat.label}
-                </div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+          {stats.map((stat) => (
+            <div key={stat.label} className="card-gaming text-center py-8">
+              <div className="font-display text-4xl md:text-5xl text-gradient mb-2">
+                {stat.value}
+              </div>
+              <div className="text-neutral-500 text-xs uppercase tracking-widest">
+                {stat.label}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Mission Statement */}
+        {/* Mission + logo */}
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
           <div>
-            <h3 className="font-gaming text-3xl md:text-4xl text-gradient mb-6">
+            <h3 className="font-heading text-2xl md:text-3xl text-white mb-6">
               OUR MISSION
             </h3>
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-neutral-400 leading-relaxed">
               <p>
-                At 7Grim Studio, we believe games are powerful mediums for storytelling and 
-                entertainment. Our mission is to create experiences that engage players and 
-                push the boundaries of what&apos;s possible in interactive media.
+                At 7Grim Studio, we believe the best games come from small teams with genuine obsession — not roadmaps and committee decisions. We build the games we couldn&#39;t stop thinking about.
               </p>
               <p>
-                We&apos;re committed to delivering high-quality games that combine innovative 
-                gameplay mechanics with compelling narratives, ensuring each project meets 
-                our standards for excellence.
+                Every title we ship will be different. A co-op zombie survival, a persistent MMORPG, a roguelike card game. What ties them together is a commitment to systems that feel good, worlds worth exploring, and gameplay that respects the player&#39;s time.
               </p>
             </div>
           </div>
-          <div className="relative">
-            <div className="card-gaming p-0 overflow-hidden">
-              <div className="relative h-80 bg-gradient-to-br from-gray-800 to-gray-900">
-                <Image
-                  src="/logo.png"
-                  alt="7Grim Studio Mission"
-                  fill
-                  className="object-contain p-8"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-              </div>
+          <div className="card-gaming p-0 overflow-hidden">
+            <div className="relative h-72 bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center">
+              <Image
+                src="/7Grim-logo-nobg.png"
+                alt="7Grim Studio"
+                width={240}
+                height={120}
+                className="opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"/>
             </div>
           </div>
         </div>
 
-        {/* Values Section */}
-        <div className="text-center">
-          <h3 className="font-gaming text-3xl md:text-4xl text-gradient mb-12">
+        {/* Values */}
+        <div>
+          <h3 className="font-heading text-2xl md:text-3xl text-white mb-10">
             OUR VALUES
           </h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="card-gaming">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">🚀</span>
+          <div className="grid md:grid-cols-3 gap-6">
+            {values.map((v) => (
+              <div key={v.title} className="card-gaming">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-600/20 to-purple-600/20 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-5">
+                  {v.icon}
+                </div>
+                <h4 className="font-gaming text-sm text-white mb-3 tracking-wider">{v.title}</h4>
+                <p className="text-neutral-500 text-sm leading-relaxed">{v.body}</p>
               </div>
-              <h4 className="font-gaming text-xl text-gradient mb-3">INNOVATION</h4>
-              <p className="text-gray-400">
-                We constantly explore new technologies and creative approaches to game development.
-              </p>
-            </div>
-            <div className="card-gaming">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">🎯</span>
-              </div>
-              <h4 className="font-gaming text-xl text-gradient mb-3">QUALITY</h4>
-              <p className="text-gray-400">
-                Every detail matters. We strive for excellence in every aspect of our games.
-              </p>
-            </div>
-            <div className="card-gaming">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h4 className="font-gaming text-xl text-gradient mb-3">COLLABORATION</h4>
-              <p className="text-gray-400">
-                Great games come from great teams working together toward a shared vision.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
+
       </div>
     </section>
   );

@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Sky: dark at zenith, brighter navy at horizon so castle silhouettes read clearly -->
+    <linearGradient id="ih-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#000000"/>
+      <stop offset="30%"  stop-color="#05091a"/>
+      <stop offset="65%"  stop-color="#0e1c38"/>
+      <stop offset="85%"  stop-color="#182d50"/>
+      <stop offset="100%" stop-color="#0f1e34"/>
+    </linearGradient>
+    <!-- Ground: dark earth -->
+    <linearGradient id="ih-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#0a1508"/>
+      <stop offset="100%" stop-color="#040906"/>
+    </linearGradient>
+    <!-- Moon warm glow -->
+    <radialGradient id="ih-moon-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#f0d870" stop-opacity="0.5"/>
+      <stop offset="40%"  stop-color="#c8a820" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Torch window glow -->
+    <radialGradient id="ih-torch" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ff9400" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Horizon atmospheric glow -->
+    <radialGradient id="ih-horizon" cx="55%" cy="100%" r="55%">
+      <stop offset="0%"   stop-color="#263860" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ih-blur-sm"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="ih-blur-md"><feGaussianBlur stdDeviation="7"/></filter>
+    <filter id="ih-blur-lg"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="ih-glow-warm">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Sky gradient (lighter at horizon = silhouettes read) -->
+  <rect width="800" height="450" fill="url(#ih-sky)"/>
+  <!-- Horizon atmospheric light -->
+  <rect width="800" height="450" fill="url(#ih-horizon)"/>
+
+  <!-- Stars (white, high contrast) -->
+  <g fill="#ffffff">
+    <circle cx="25"  cy="16"  r="1.3" opacity="0.9"/>
+    <circle cx="68"  cy="38"  r="0.9" opacity="0.75"/>
+    <circle cx="120" cy="12"  r="1.5" opacity="0.95"/>
+    <circle cx="172" cy="32"  r="1.0" opacity="0.8"/>
+    <circle cx="210" cy="20"  r="0.9" opacity="0.85"/>
+    <circle cx="268" cy="8"   r="1.3" opacity="0.8"/>
+    <circle cx="312" cy="28"  r="1.0" opacity="0.7"/>
+    <circle cx="380" cy="15"  r="1.4" opacity="0.95"/>
+    <circle cx="428" cy="44"  r="0.9" opacity="0.75"/>
+    <circle cx="500" cy="14"  r="1.1" opacity="0.85"/>
+    <circle cx="548" cy="34"  r="1.5" opacity="0.7"/>
+    <circle cx="610" cy="10"  r="1.0" opacity="0.95"/>
+    <circle cx="664" cy="42"  r="1.3" opacity="0.75"/>
+    <circle cx="714" cy="18"  r="0.9" opacity="0.85"/>
+    <circle cx="762" cy="30"  r="1.2" opacity="0.7"/>
+    <circle cx="44"  cy="72"  r="1.0" opacity="0.75"/>
+    <circle cx="98"  cy="62"  r="1.2" opacity="0.85"/>
+    <circle cx="144" cy="84"  r="0.8" opacity="0.7"/>
+    <circle cx="238" cy="68"  r="1.1" opacity="0.75"/>
+    <circle cx="332" cy="58"  r="0.9" opacity="0.85"/>
+    <circle cx="444" cy="76"  r="1.3" opacity="0.75"/>
+    <circle cx="522" cy="56"  r="1.0" opacity="0.7"/>
+    <circle cx="594" cy="72"  r="1.2" opacity="0.85"/>
+    <circle cx="692" cy="60"  r="0.9" opacity="0.75"/>
+    <circle cx="752" cy="75"  r="1.1" opacity="0.7"/>
+    <circle cx="18"  cy="106" r="0.8" opacity="0.6"/>
+    <circle cx="190" cy="98"  r="0.7" opacity="0.55"/>
+    <circle cx="336" cy="96"  r="0.9" opacity="0.65"/>
+    <circle cx="478" cy="102" r="0.8" opacity="0.6"/>
+    <circle cx="638" cy="92"  r="1.0" opacity="0.65"/>
+    <circle cx="748" cy="108" r="0.8" opacity="0.55"/>
+  </g>
+
+  <!-- Moon halo (large, soft, behind moon) -->
+  <circle cx="145" cy="80" r="90" fill="url(#ih-moon-halo)" filter="url(#ih-blur-lg)"/>
+  <!-- Moon glow layer -->
+  <circle cx="145" cy="80" r="46" fill="#c8a020" opacity="0.35" filter="url(#ih-blur-md)"/>
+  <!-- Moon body -->
+  <circle cx="145" cy="80" r="32" fill="#e8d060"/>
+  <circle cx="145" cy="80" r="30" fill="#f0d868"/>
+  <!-- Moon surface (craters, subtle) -->
+  <circle cx="134" cy="72" r="6"  fill="#d4bc40" opacity="0.55"/>
+  <circle cx="153" cy="88" r="4"  fill="#c8b030" opacity="0.5"/>
+  <circle cx="140" cy="91" r="2.5" fill="#d4bc40" opacity="0.4"/>
+
+  <!-- Distant mountains (dark silhouette against lighter horizon sky) -->
+  <!-- Use fill that's darker than the #182d50 horizon for clear contrast -->
+  <polygon
+    points="0,310 60,195 120,255 200,170 288,220 375,172 458,228 545,165 630,212 714,175 800,198 800,310"
+    fill="#060d1a"/>
+
+  <!-- Castle — very dark #030710 silhouette against #0e1c38 sky zone -->
+  <!-- Outer defensive walls -->
+  <rect x="360" y="228" width="218" height="222" fill="#030810"/>
+  <!-- Left tower (tall) -->
+  <rect x="340" y="168" width="56"  height="282" fill="#040912"/>
+  <!-- Right tower -->
+  <rect x="542" y="180" width="52"  height="270" fill="#040912"/>
+  <!-- Central keep (tallest) -->
+  <rect x="445" y="145" width="68"  height="305" fill="#050a14"/>
+  <!-- Battlements — left tower -->
+  <rect x="339" y="155" width="11" height="18" fill="#040912"/>
+  <rect x="354" y="155" width="11" height="18" fill="#040912"/>
+  <rect x="369" y="155" width="11" height="18" fill="#040912"/>
+  <rect x="384" y="155" width="11" height="18" fill="#040912"/>
+  <!-- Battlements — keep -->
+  <rect x="444" y="133" width="11" height="16" fill="#050a14"/>
+  <rect x="459" y="133" width="11" height="16" fill="#050a14"/>
+  <rect x="474" y="133" width="11" height="16" fill="#050a14"/>
+  <rect x="489" y="133" width="11" height="16" fill="#050a14"/>
+  <rect x="504" y="133" width="11" height="16" fill="#050a14"/>
+  <!-- Battlements — right tower -->
+  <rect x="541" y="168" width="11" height="18" fill="#040912"/>
+  <rect x="556" y="168" width="11" height="18" fill="#040912"/>
+  <rect x="571" y="168" width="11" height="18" fill="#040912"/>
+  <!-- Stone coursing lines (subtle texture on keep) -->
+  <line x1="445" y1="180" x2="513" y2="180" stroke="#060c18" stroke-width="1.5" opacity="0.6"/>
+  <line x1="445" y1="200" x2="513" y2="200" stroke="#060c18" stroke-width="1.5" opacity="0.6"/>
+  <line x1="445" y1="220" x2="513" y2="220" stroke="#060c18" stroke-width="1.5" opacity="0.6"/>
+  <line x1="445" y1="240" x2="513" y2="240" stroke="#060c18" stroke-width="1.5" opacity="0.6"/>
+  <!-- Gate arch -->
+  <rect x="405" y="302" width="74"  height="148" fill="#020608"/>
+  <ellipse cx="442" cy="302" rx="37" ry="30" fill="#020608"/>
+  <!-- Portcullis bars -->
+  <line x1="410" y1="308" x2="478" y2="308" stroke="#050c14" stroke-width="2"/>
+  <line x1="410" y1="322" x2="478" y2="322" stroke="#050c14" stroke-width="2"/>
+  <line x1="410" y1="336" x2="478" y2="336" stroke="#050c14" stroke-width="2"/>
+  <line x1="422" y1="302" x2="422" y2="450" stroke="#050c14" stroke-width="2"/>
+  <line x1="436" y1="302" x2="436" y2="450" stroke="#050c14" stroke-width="2"/>
+  <line x1="450" y1="302" x2="450" y2="450" stroke="#050c14" stroke-width="2"/>
+  <line x1="464" y1="302" x2="464" y2="450" stroke="#050c14" stroke-width="2"/>
+
+  <!-- Torchlit windows (bright warm orange — primary visual anchor) -->
+  <!-- Large glows behind windows (bloom effect) -->
+  <circle cx="357" cy="218" r="28" fill="url(#ih-torch)" filter="url(#ih-blur-md)" opacity="0.9"/>
+  <circle cx="466" cy="190" r="32" fill="url(#ih-torch)" filter="url(#ih-blur-md)" opacity="0.95"/>
+  <circle cx="560" cy="225" r="28" fill="url(#ih-torch)" filter="url(#ih-blur-md)" opacity="0.9"/>
+  <circle cx="390" cy="268" r="22" fill="url(#ih-torch)" filter="url(#ih-blur-sm)" opacity="0.7"/>
+  <circle cx="520" cy="268" r="22" fill="url(#ih-torch)" filter="url(#ih-blur-sm)" opacity="0.7"/>
+  <!-- Window rectangles (bright fill) -->
+  <rect x="348" y="208" width="20" height="28" fill="#ff9a00" opacity="0.95" rx="2"/>
+  <rect x="456" y="178" width="22" height="30" fill="#ffaa00" opacity="1"    rx="2"/>
+  <rect x="552" y="215" width="20" height="28" fill="#ff9a00" opacity="0.95" rx="2"/>
+  <rect x="382" y="258" width="16" height="22" fill="#ff8800" opacity="0.85" rx="2"/>
+  <rect x="512" y="258" width="16" height="22" fill="#ff8800" opacity="0.85" rx="2"/>
+
+  <!-- Banner/flags -->
+  <line x1="362" y1="168" x2="362" y2="118" stroke="#3a1a0a" stroke-width="2.5"/>
+  <polygon points="362,118 392,128 362,142" fill="#7a1515" opacity="0.9"/>
+  <line x1="479" y1="133" x2="479" y2="82"  stroke="#3a1a0a" stroke-width="2.5"/>
+  <polygon points="479,82 510,93 479,107"    fill="#7a1515" opacity="0.9"/>
+  <line x1="560" y1="180" x2="560" y2="130" stroke="#3a1a0a" stroke-width="2.5"/>
+  <polygon points="560,130 590,140 560,155"  fill="#7a1515" opacity="0.9"/>
+
+  <!-- Tree line — left (very dark, strong silhouette) -->
+  <g fill="#020606">
+    <polygon points="8,450   44,294 80,450"/>
+    <polygon points="0,450   44,314 88,450"/>
+    <polygon points="65,450  100,288 135,450"/>
+    <polygon points="55,450  100,308 145,450"/>
+    <polygon points="128,450 162,296 196,450"/>
+    <polygon points="118,450 162,315 206,450"/>
+    <polygon points="188,450 220,304 252,450"/>
+    <polygon points="245,450 275,298 305,450"/>
+  </g>
+  <!-- Tree line — right -->
+  <g fill="#020606">
+    <polygon points="638,450 670,292 702,450"/>
+    <polygon points="628,450 670,312 712,450"/>
+    <polygon points="696,450 730,288 764,450"/>
+    <polygon points="686,450 730,308 774,450"/>
+    <polygon points="752,450 786,299 800,450 800,450"/>
+  </g>
+
+  <!-- Ground -->
+  <rect x="0" y="400" width="800" height="50" fill="url(#ih-ground)"/>
+  <!-- Path to gate (slightly lighter) -->
+  <polygon points="388,450 404,410 480,404 558,410 588,450" fill="#0e1a0e" opacity="0.8"/>
+
+  <!-- Lone warrior silhouette -->
+  <g fill="#05090c" transform="translate(442,368)">
+    <ellipse cx="0" cy="-46" rx="8" ry="9"/>
+    <rect x="-3" y="-59" width="6" height="14" fill="#4a0808" opacity="0.85"/>
+    <rect x="-11" y="-37" width="22" height="29" rx="2"/>
+    <rect x="-24" y="-36" width="14" height="24" rx="3"/>
+    <line x1="11" y1="-37" x2="25" y2="-63" stroke="#05090c" stroke-width="4" stroke-linecap="round"/>
+    <rect x="23" y="-74" width="4" height="14" rx="1"/>
+    <rect x="-10" y="-8" width="8" height="22" rx="1"/>
+    <rect x="2"   y="-8" width="8" height="22" rx="1"/>
+  </g>
+
+  <!-- Low ground fog -->
+  <rect x="0" y="388" width="800" height="40" fill="#0a1525" opacity="0.35" filter="url(#ih-blur-sm)"/>
+  <!-- Top vignette -->
+  <rect x="0" y="0" width="800" height="32" fill="#000000" opacity="0.7"/>
+</svg>

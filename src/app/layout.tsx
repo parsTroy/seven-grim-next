@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Orbitron } from "next/font/google";
 import "./globals.css";
 import { constructMetaData } from "@/lib/utils";
@@ -11,6 +11,11 @@ const orbitron = Orbitron({
 });
 
 export const metadata = constructMetaData();
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export default function RootLayout({
   children,
